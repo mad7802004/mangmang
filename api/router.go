@@ -2,8 +2,8 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/mangmang/api/v1/service_user"
 	"github.com/mangmang/pkg/setting"
-	"net/http"
 )
 
 func InitRouter() *gin.Engine {
@@ -15,10 +15,7 @@ func InitRouter() *gin.Engine {
 
 	apiV1 := r.Group("api/v1")
 	{
-		apiV1.GET("/test", func(c *gin.Context) {
-			c.JSON(http.StatusOK, gin.H{"code": 0, "msg": "成功"})
-		})
-
+		apiV1.GET("/test", service_user.Test)
 	}
 
 	return r
