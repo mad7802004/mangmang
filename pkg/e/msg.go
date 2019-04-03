@@ -9,6 +9,8 @@ var ZhCnMsgFlags = map[int]string{
 	MobileNumberError:     "电话号码错误",
 	FrequentOperation:     "请勿频繁操作",
 	InconsistentPassword:  "密码不一致",
+	PhoneNumberIsRegistered:    "手机号码被注册",
+	AccountOrPassWordErr:       "账户或密码错误",
 }
 
 var EnMsgFlags = map[int]string{

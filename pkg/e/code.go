@@ -1,14 +1,16 @@
 package e
 
 const (
-	SUCCESS               = 0      //成功
-	FAIL                  = -1     // 失败
-	InvalidParameter      = 400001 // 参数无效
-	InvalidAuthorization  = 40100  //授权无效,请登录
-	VerificationCodeError = 400101 //验证码错误
-	MobileNumberError     = 400102 // 电话号码错误
-	FrequentOperation     = 400103 // 请勿频繁操作
-	InconsistentPassword  = 40104  // 密码不一致
+	SUCCESS                 = 0      //成功
+	FAIL                    = -1     // 失败
+	InvalidParameter        = 400001 // 参数无效
+	InvalidAuthorization    = 40100  //授权无效,请登录
+	VerificationCodeError   = 400101 //验证码错误
+	MobileNumberError       = 400102 // 电话号码错误
+	FrequentOperation       = 400103 // 请勿频繁操作
+	InconsistentPassword    = 40104  // 密码不一致
+	PhoneNumberIsRegistered = 40105  //手机号码被注册
+	AccountOrPassWordErr    = 40106  //账户或密码错误
 )
 
 type Msg struct {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
+	"github.com/mangmang/models"
 	"github.com/mangmang/pkg/app"
 	"github.com/mangmang/pkg/e"
 	"github.com/mangmang/pkg/gredis"
@@ -93,6 +94,33 @@ func PhoneRegister(c *gin.Context) {
 		appG.Response(http.StatusOK, e.VerificationCodeError, nil)
 		return
 	}
+	// 验证手机号是否被注册
+	if !models.IsExistPhone(obj.Phone) {
+		appG.Response(http.StatusOK, e.PhoneNumberIsRegistered, nil)
+		return
+	}
+
+	// 生成UUID错误
+	userId := utils.GetUUID()
+
+	newUser := &models.User{
+		Id:    userId,
+		Name:  obj.Name,
+		Phone: obj.Phone,
+	}
+
+	newLoginMethod := &models.UserLoginMethod{
+		Id:             utils.GetUUID(),
+		UserId:         userId,
+		LoginType:      e.LoginPhone,
+		Identification: obj.Phone,
+		AccessCode:     utils.Md5Encrypt(obj.PassWord1),
+	}
+
+	if !models.Create(newUser, newLoginMethod) {
+		appG.Response(http.StatusOK, e.FAIL, nil)
+		return
+	}
 
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
 	return
@@ -112,13 +140,33 @@ func UserLoginAPW(c *gin.Context) {
 		return
 	}
 
-	appG.Response(http.StatusOK, e.SUCCESS, nil)
+	// 判断用户登陆方式是否存在
+	loginMethod, err := models.FindPhoneLoginMethod(obj.Phone)
+	if err != nil {
+		appG.Response(http.StatusOK, e.AccountOrPassWordErr, nil)
+		return
+	}
+
+	// 判断账户密码是否正确
+	if loginMethod.AccessCode != utils.Md5Encrypt(obj.PassWord) {
+		appG.Response(http.StatusOK, e.AccountOrPassWordErr, nil)
+		return
+	}
+
+	// 获取用户信息
+	userInfo, err := models.UserInfo(loginMethod.UserId)
+	if err != nil {
+		appG.Response(http.StatusOK, e.AccountOrPassWordErr, nil)
+		return
+	}
+
+	appG.Response(http.StatusOK, e.SUCCESS, userInfo)
 	return
 
 }
 
 // 用户验证码登陆
-func UserLoginAV(c *gin.Context) {
+func UserLoginAC(c *gin.Context) {
 	var obj struct {
 		Phone string `json:"phone"`
 		Code  string `json:"code"`
@@ -131,7 +179,27 @@ func UserLoginAV(c *gin.Context) {
 		return
 	}
 
-	appG.Response(http.StatusOK, e.SUCCESS, nil)
+	// 验证码错误
+	if !utils.CheckPhoneCode(obj.Phone, obj.Code, false) {
+		appG.Response(http.StatusOK, e.VerificationCodeError, nil)
+		return
+	}
+
+	// 判断用户登陆方式是否存在
+	loginMethod, err := models.FindPhoneLoginMethod(obj.Phone)
+	if err != nil {
+		appG.Response(http.StatusOK, e.AccountOrPassWordErr, nil)
+		return
+	}
+
+	// 获取用户信息
+	userInfo, err := models.UserInfo(loginMethod.UserId)
+	if err != nil {
+		appG.Response(http.StatusOK, e.AccountOrPassWordErr, nil)
+		return
+	}
+
+	appG.Response(http.StatusOK, e.SUCCESS, userInfo)
 	return
 
 }
@@ -161,6 +229,7 @@ func ChangePW(c *gin.Context) {
 // 用户修改个人信息
 func ChangeInfo(c *gin.Context) {
 	var obj struct {
+
 	}
 	appG := app.New(c)
 
