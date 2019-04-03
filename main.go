@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/mangmang/api"
 	"github.com/mangmang/models"
+	"github.com/mangmang/pkg/gredis"
 	"github.com/mangmang/pkg/setting"
 	"net/http"
 )
@@ -11,6 +12,7 @@ import (
 func main() {
 	setting.Setup()
 	models.Setup()
+	gredis.Setup()
 
 	router := api.InitRouter()
 

@@ -1,9 +1,14 @@
 package e
 
 var ZhCnMsgFlags = map[int]string{
-	SUCCESS:              "成功",
-	FAIL:                 "失败",
-	InvalidAuthorization: "授权无效,请登录",
+	SUCCESS:               "成功",
+	FAIL:                  "失败",
+	InvalidParameter:      "参数无效",
+	InvalidAuthorization:  "授权无效,请登录",
+	VerificationCodeError: "验证码错误",
+	MobileNumberError:     "电话号码错误",
+	FrequentOperation:     "请勿频繁操作",
+	InconsistentPassword:  "密码不一致",
 }
 
 var EnMsgFlags = map[int]string{

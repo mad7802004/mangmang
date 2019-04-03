@@ -16,6 +16,8 @@ func InitRouter() *gin.Engine {
 	apiV1 := r.Group("api/v1")
 	{
 		apiV1.GET("/test", service_user.Test)
+		apiV1.GET("/getVerificationCode", service_user.GetVerificationCode)
+		apiV1.POST("/phoneRegister", service_user.PhoneRegister)
 	}
 
 	return r
