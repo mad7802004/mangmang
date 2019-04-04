@@ -9,6 +9,7 @@ import (
 	"github.com/mangmang/pkg/e"
 	"github.com/mangmang/pkg/gredis"
 	"github.com/mangmang/pkg/utils"
+	"log"
 	"net/http"
 	"time"
 )
@@ -69,11 +70,11 @@ func GetVerificationCode(c *gin.Context) {
 // 用户手机号注册
 func PhoneRegister(c *gin.Context) {
 	var obj struct {
-		Name      string `json:"name"`
-		Phone     string `json:"phone"`
-		PassWord1 string `json:"pass_word_1"`
-		PassWord2 string `json:"pass_word_2"`
-		Code      string `json:"code"`
+		Name      string `json:"name"binding:"max=20"`
+		Phone     string `json:"phone"binding:"eq=11"`
+		PassWord1 string `json:"pass_word_1"binding:"min=6"`
+		PassWord2 string `json:"pass_word_2"binding:"min=6"`
+		Code      string `json:"code"binding:"eq=6"`
 	}
 	appG := app.New(c)
 
@@ -129,11 +130,10 @@ func PhoneRegister(c *gin.Context) {
 // 用户密码登陆
 func UserLoginAPW(c *gin.Context) {
 	var obj struct {
-		Phone    string `json:"phone"`
-		PassWord string `json:"pass_word"`
+		Phone    string `json:"phone"binding:"len=11"`
+		PassWord string `json:"pass_word"binding:"min=6"`
 	}
 	appG := app.New(c)
-
 	//参数解析失败
 	if c.ShouldBindJSON(&obj) != nil {
 		appG.Response(http.StatusOK, e.InvalidParameter, nil)
@@ -168,8 +168,8 @@ func UserLoginAPW(c *gin.Context) {
 // 用户验证码登陆
 func UserLoginAC(c *gin.Context) {
 	var obj struct {
-		Phone string `json:"phone"`
-		Code  string `json:"code"`
+		Phone string `json:"phone"binding:"len=11"`
+		Code  string `json:"code"binding:"len=6"`
 	}
 	appG := app.New(c)
 
@@ -227,19 +227,45 @@ func ChangePW(c *gin.Context) {
 }
 
 // 用户修改个人信息
-func ChangeInfo(c *gin.Context) {
+func ChangeUserInfo(c *gin.Context) {
 	var obj struct {
+		UserId   string         `json:"user_id"binding:"uuid4"`
+		Name     string         `json:"name"binding:"max=20"`
+		Email    string         `json:"email"binding:"omitempty,email"`
+		Sex      int8           `json:"sex"binding:"min=0,max=2"`
+		Birthday utils.JSONDate `json:"birthday"`
 
+		Address string `json:"address"binding:"max=100"`
 	}
 	appG := app.New(c)
-
 	//参数解析失败
 	if c.ShouldBindJSON(&obj) != nil {
 		appG.Response(http.StatusOK, e.InvalidParameter, nil)
 		return
 	}
+	// 获取用户数据
+	userInfo, err := models.UserInfo(obj.UserId)
+	if err != nil {
+		appG.Response(http.StatusOK, e.FAIL, nil)
+		return
+	}
 
+	// 更新用户数据
+	if !models.UpdateUserInfo(userInfo, obj) {
+		appG.Response(http.StatusOK, e.FAIL, nil)
+		return
+
+	}
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
 	return
 
+}
+
+// 用户上传头像
+func UploadAvatar(c *gin.Context) {
+	appG := app.New(c)
+	file, _ := c.FormFile("file")
+	log.Println(file.Filename)
+	appG.Response(http.StatusOK, e.SUCCESS, nil)
+	return
 }
