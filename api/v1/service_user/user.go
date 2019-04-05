@@ -8,9 +8,10 @@ import (
 	"github.com/mangmang/pkg/app"
 	"github.com/mangmang/pkg/e"
 	"github.com/mangmang/pkg/gredis"
+	"github.com/mangmang/pkg/setting"
 	"github.com/mangmang/pkg/utils"
-	"log"
 	"net/http"
+	"path"
 	"time"
 )
 
@@ -154,7 +155,7 @@ func UserLoginAPW(c *gin.Context) {
 	}
 
 	// 获取用户信息
-	userInfo, err := models.UserInfo(loginMethod.UserId)
+	userInfo, err := models.FindUserIdInfo(loginMethod.UserId)
 	if err != nil {
 		appG.Response(http.StatusOK, e.AccountOrPassWordErr, nil)
 		return
@@ -193,7 +194,7 @@ func UserLoginAC(c *gin.Context) {
 	}
 
 	// 获取用户信息
-	userInfo, err := models.UserInfo(loginMethod.UserId)
+	userInfo, err := models.FindUserIdInfo(loginMethod.UserId)
 	if err != nil {
 		appG.Response(http.StatusOK, e.AccountOrPassWordErr, nil)
 		return
@@ -205,19 +206,40 @@ func UserLoginAC(c *gin.Context) {
 }
 
 // 用户修改密码
-func ChangePW(c *gin.Context) {
+func ChangePassWord(c *gin.Context) {
 	var obj struct {
-		Phone       string `json:"phone"`
-		Code        string `json:"code"`
-		OldPassWord string `json:"old_pass_word"`
-		PassWord1   string `json:"pass_word_1"`
-		PassWord2   string `json:"pass_word_2"`
+		UserId      string `json:"user_id"binding:"uuid4"`
+		OldPassWord string `json:"old_pass_word"binding:"min=6"`
+		PassWord1   string `json:"pass_word_1"binding:"min=6"`
+		PassWord2   string `json:"pass_word_2"binding:"min=6"`
 	}
 	appG := app.New(c)
 
 	//参数解析失败
 	if c.ShouldBindJSON(&obj) != nil {
 		appG.Response(http.StatusOK, e.InvalidParameter, nil)
+		return
+	}
+	// 两次密码不一致
+	if obj.PassWord1 != obj.PassWord2 {
+		appG.Response(http.StatusOK, e.InconsistentPassword, nil)
+		return
+	}
+
+	// 查询密码登录方法是否存在
+	loginMethod, err := models.FindUserIdLoginMethod(obj.UserId)
+	if err != nil {
+		appG.Response(http.StatusOK, e.FAIL, nil)
+		return
+	}
+	// 比较老密码是否一致
+	if loginMethod.AccessCode != utils.Md5Encrypt(obj.OldPassWord) {
+		appG.Response(http.StatusOK, e.OldPasswordError, nil)
+		return
+	}
+	// 更新密码失败
+	if !models.UpdateUserPassWord(loginMethod, obj.PassWord1) {
+		appG.Response(http.StatusOK, e.OldPasswordError, nil)
 		return
 	}
 
@@ -244,7 +266,7 @@ func ChangeUserInfo(c *gin.Context) {
 		return
 	}
 	// 获取用户数据
-	userInfo, err := models.UserInfo(obj.UserId)
+	userInfo, err := models.FindUserIdInfo(obj.UserId)
 	if err != nil {
 		appG.Response(http.StatusOK, e.FAIL, nil)
 		return
@@ -254,7 +276,6 @@ func ChangeUserInfo(c *gin.Context) {
 	if !models.UpdateUserInfo(userInfo, obj) {
 		appG.Response(http.StatusOK, e.FAIL, nil)
 		return
-
 	}
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
 	return
@@ -264,8 +285,35 @@ func ChangeUserInfo(c *gin.Context) {
 // 用户上传头像
 func UploadAvatar(c *gin.Context) {
 	appG := app.New(c)
-	file, _ := c.FormFile("file")
-	log.Println(file.Filename)
+	userId := c.PostForm("user_id")
+	file, err := c.FormFile("file")
+
+	// 用户ID错误或读取上传文件错误
+	if userId == "" || err != nil {
+		appG.Response(http.StatusOK, e.InvalidParameter, nil)
+		return
+	}
+	// 用户不存在
+	userInfo, err := models.FindUserIdInfo(userId)
+	if err != nil {
+		appG.Response(http.StatusOK, e.FAIL, nil)
+		return
+	}
+
+	// 拼接路径
+	filePath := path.Join(setting.AppSetting.AvatarPath, file.Filename)
+	err = c.SaveUploadedFile(file, filePath)
+	if err != nil {
+		appG.Response(http.StatusOK, e.FAIL, nil)
+		return
+	}
+
+	// 更新头像路径
+	if !models.UpdateUserInfo(userInfo, map[string]interface{}{"avatar_url": filePath}) {
+		appG.Response(http.StatusOK, e.FAIL, nil)
+		return
+	}
+
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
 	return
 }

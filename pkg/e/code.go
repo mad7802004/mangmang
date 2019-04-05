@@ -11,6 +11,7 @@ const (
 	InconsistentPassword    = 40104  // 密码不一致
 	PhoneNumberIsRegistered = 40105  //手机号码被注册
 	AccountOrPassWordErr    = 40106  //账户或密码错误
+	OldPasswordError        = 400107 // 旧密码错误
 )
 
 type Msg struct {

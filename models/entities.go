@@ -41,7 +41,7 @@ func IsExistPhone(phone string) bool {
 
 }
 
-// 查询用户
+// 根据手机号查询用户手机登录方式信息
 func FindPhoneLoginMethod(phone string) (*UserLoginMethod, error) {
 	var loginMethod UserLoginMethod
 	err := Orm.Model(&UserLoginMethod{}).
@@ -52,8 +52,21 @@ func FindPhoneLoginMethod(phone string) (*UserLoginMethod, error) {
 	return &loginMethod, nil
 }
 
-// 查询用户信息
-func UserInfo(userId string) (*User, error) {
+// 根据用户ID查询手机登录方式信息
+func FindUserIdLoginMethod(userId string) (*UserLoginMethod, error) {
+	var loginMethod UserLoginMethod
+
+	err := Orm.Model(&UserLoginMethod{}).
+		Where("user_id =? and login_type =? and data_status=?", userId, e.LoginPhone, e.Enable).
+		Find(&loginMethod).Error
+	if err != nil {
+		return nil, err
+	}
+	return &loginMethod, nil
+}
+
+// 根据ID查询用户信息
+func FindUserIdInfo(userId string) (*User, error) {
 	var user User
 	err := Orm.Model(&User{}).Where("id = ? and data_status=?", userId, e.Enable).Find(&user).Error
 	if err != nil {
@@ -96,4 +109,15 @@ func UpdateUserInfo(user *User, data interface{}) bool {
 		return false
 	}
 	return true
+}
+
+// 更新用户手机登录密码
+func UpdateUserPassWord(loginMethod *UserLoginMethod, passWord string) bool {
+	err := Orm.Model(&loginMethod).
+		Updates(map[string]interface{}{"access_code": utils.Md5Encrypt(passWord)}).Error
+	if err != nil {
+		return false
+	}
+	return true
+
 }

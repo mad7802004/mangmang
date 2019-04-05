@@ -22,6 +22,7 @@ func InitRouter() *gin.Engine {
 		apiV1.POST("/user/loginAC", service_user.UserLoginAC)
 		apiV1.PUT("/user/changeUserInfo", service_user.ChangeUserInfo)
 		apiV1.POST("/user/uploadAvatar", service_user.UploadAvatar)
+		apiV1.POST("/user/changePassWord", service_user.ChangePassWord)
 	}
 
 	return r
