@@ -5,6 +5,7 @@ import (
 	"github.com/mangmang/pkg/utils"
 )
 
+// 用户表
 type User struct {
 	Id         string         `json:"id"gorm:"primary_key"` // id
 	Name       string         `json:"name"`                 // 昵称
@@ -19,6 +20,7 @@ type User struct {
 	DataStatus int8           `json:"-"gorm:"default" `     // 用户状态
 }
 
+// 用户登录授权表
 type UserLoginMethod struct {
 	Id             string         `json:"id"gorm:"primary_key"` // id
 	UserId         string         `json:"user_id"`              //  用户ID
@@ -28,6 +30,21 @@ type UserLoginMethod struct {
 	CreateTime     utils.JSONTime `json:"-"`                    // 创建日期
 	UpdateTime     utils.JSONTime `json:"-"`                    // 更新日期
 	DataStatus     int8           `json:"-"gorm:"default"`      // 该登陆方式是否禁用0禁用，1开启
+}
+
+// 名片表
+type BusinessCard struct {
+	Id         string         `json:"id"gorm:"primary_key"` // id
+	UserId     string         `json:"user_id"`              // 用户ID
+	Name       string         `json:"name"`                 // 姓名
+	Company    string         `json:"company"`              // 公司
+	Position   string         `json:"position"`             // 职位
+	Phone      string         `json:"phone"`                // 电话
+	Qq         string         `json:"qq"`                   // QQ号
+	Wx         string         `json:"wx"`                   // 微信号
+	CreateTime utils.JSONTime `json:"create_time"`          // 创建时间
+	UpdateTime utils.JSONTime `json:"update_time"`          // 更新时间
+	DataStatus int8           `json:"data_status"`          // 0删除，1有效
 }
 
 // 查询手机号是否被注册使用
