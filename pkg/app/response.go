@@ -21,6 +21,8 @@ func (g *Gin) AddField(key string, value interface{}) {
 
 func (g *Gin) Response(httpCode, errCode int, data interface{}) {
 	g.M.Update(errCode, data)
-	g.C.JSON(httpCode, g.M.M)
+	msg := g.M.M
+	delete(msg, "lang")
+	g.C.JSON(httpCode, msg)
 	return
 }

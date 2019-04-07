@@ -1,17 +1,24 @@
 package e
 
 const (
-	SUCCESS                 = 0      //成功
-	FAIL                    = -1     // 失败
-	InvalidParameter        = 400001 // 参数无效
-	InvalidAuthorization    = 40100  //授权无效,请登录
-	VerificationCodeError   = 400101 //验证码错误
-	MobileNumberError       = 400102 // 电话号码错误
-	FrequentOperation       = 400103 // 请勿频繁操作
-	InconsistentPassword    = 40104  // 密码不一致
-	PhoneNumberIsRegistered = 40105  //手机号码被注册
-	AccountOrPassWordErr    = 40106  //账户或密码错误
-	OldPasswordError        = 400107 // 旧密码错误
+	SUCCESS                  = 0      //成功
+	FAIL                     = -1     // 失败
+	NewFailed                = 400001 // 新建失败
+	UpdateFailed             = 400002 // 更新失败
+	FailedToDelete           = 400003 // 删除失败
+	AcquisitionFailed        = 400004 // 获取失败
+	InvalidParameter         = 400005 // 参数无效
+	InvalidAuthorization     = 400100 //授权无效,请登录
+	VerificationCodeError    = 400101 //验证码错误
+	MobileNumberError        = 400102 // 电话号码错误
+	FrequentOperation        = 400103 // 请勿频繁操作
+	InconsistentPassword     = 400104 // 密码不一致
+	PhoneNumberIsRegistered  = 400105 //手机号码被注册
+	AccountOrPassWordErr     = 400106 //账户或密码错误
+	OldPasswordError         = 400107 // 旧密码错误
+	NoResourcesFound         = 400108 // 没有找到资源
+	AccountDoesNotExist      = 400109 //账户不存在
+	BusinessCardCoesNotExist = 400110 //名片不存在
 )
 
 type Msg struct {

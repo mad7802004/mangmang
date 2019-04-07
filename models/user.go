@@ -32,21 +32,6 @@ type UserLoginMethod struct {
 	DataStatus     int8           `json:"-"gorm:"default"`      // 该登陆方式是否禁用0禁用，1开启
 }
 
-// 名片表
-type BusinessCard struct {
-	Id         string         `json:"id"gorm:"primary_key"` // id
-	UserId     string         `json:"user_id"`              // 用户ID
-	Name       string         `json:"name"`                 // 姓名
-	Company    string         `json:"company"`              // 公司
-	Position   string         `json:"position"`             // 职位
-	Phone      string         `json:"phone"`                // 电话
-	Qq         string         `json:"qq"`                   // QQ号
-	Wx         string         `json:"wx"`                   // 微信号
-	CreateTime utils.JSONTime `json:"create_time"`          // 创建时间
-	UpdateTime utils.JSONTime `json:"update_time"`          // 更新时间
-	DataStatus int8           `json:"data_status"`          // 0删除，1有效
-}
-
 // 查询手机号是否被注册使用
 func IsExistPhone(phone string) bool {
 
@@ -55,6 +40,16 @@ func IsExistPhone(phone string) bool {
 		return true
 	}
 	return false
+
+}
+
+// 根据UUID判断用户是否存在
+func IsExistUser(userId string) bool {
+	_, err := FindUserIdInfo(userId)
+	if err != nil {
+		return false
+	}
+	return true
 
 }
 
@@ -92,32 +87,6 @@ func FindUserIdInfo(userId string) (*User, error) {
 	return &user, nil
 }
 
-func Create(data ...interface{}) bool {
-	tx := Orm.Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-		}
-	}()
-
-	if err := tx.Error; err != nil {
-		return false
-	}
-	for _, model := range data {
-
-		if err := tx.Create(model).Error; err != nil {
-			tx.Rollback()
-			return false
-		}
-	}
-
-	if err := tx.Commit().Error; err != nil {
-		tx.Rollback()
-		return false
-	}
-	return true
-
-}
 
 // 更新用户信息
 func UpdateUserInfo(user *User, data interface{}) bool {

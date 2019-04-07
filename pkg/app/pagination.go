@@ -13,10 +13,10 @@ func GetPageSize(c *gin.Context) (int, int) {
 	page = com.StrTo(c.Query("page")).MustInt()
 	size = com.StrTo(c.Query("size")).MustInt()
 
-	if page == 0 {
+	if page <= 0 {
 		page = setting.AppSetting.Page
 	}
-	if size == 0 {
+	if size <= 0 {
 		size = setting.AppSetting.PageSize
 	}
 

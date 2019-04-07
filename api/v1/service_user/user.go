@@ -120,7 +120,7 @@ func PhoneRegister(c *gin.Context) {
 	}
 
 	if !models.Create(newUser, newLoginMethod) {
-		appG.Response(http.StatusOK, e.FAIL, nil)
+		appG.Response(http.StatusOK, e.NewFailed, nil)
 		return
 	}
 
@@ -239,7 +239,7 @@ func ChangePassWord(c *gin.Context) {
 	}
 	// 更新密码失败
 	if !models.UpdateUserPassWord(loginMethod, obj.PassWord1) {
-		appG.Response(http.StatusOK, e.OldPasswordError, nil)
+		appG.Response(http.StatusOK, e.UpdateFailed, nil)
 		return
 	}
 
@@ -256,8 +256,7 @@ func ChangeUserInfo(c *gin.Context) {
 		Email    string         `json:"email"binding:"omitempty,email"`
 		Sex      int8           `json:"sex"binding:"min=0,max=2"`
 		Birthday utils.JSONDate `json:"birthday"`
-
-		Address string `json:"address"binding:"max=100"`
+		Address  string         `json:"address"binding:"max=100"`
 	}
 	appG := app.New(c)
 	//参数解析失败
@@ -268,13 +267,13 @@ func ChangeUserInfo(c *gin.Context) {
 	// 获取用户数据
 	userInfo, err := models.FindUserIdInfo(obj.UserId)
 	if err != nil {
-		appG.Response(http.StatusOK, e.FAIL, nil)
+		appG.Response(http.StatusOK, e.AccountDoesNotExist, nil)
 		return
 	}
 
 	// 更新用户数据
 	if !models.UpdateUserInfo(userInfo, obj) {
-		appG.Response(http.StatusOK, e.FAIL, nil)
+		appG.Response(http.StatusOK, e.UpdateFailed, nil)
 		return
 	}
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
@@ -296,7 +295,7 @@ func UploadAvatar(c *gin.Context) {
 	// 用户不存在
 	userInfo, err := models.FindUserIdInfo(userId)
 	if err != nil {
-		appG.Response(http.StatusOK, e.FAIL, nil)
+		appG.Response(http.StatusOK, e.AccountDoesNotExist, nil)
 		return
 	}
 
@@ -310,7 +309,7 @@ func UploadAvatar(c *gin.Context) {
 
 	// 更新头像路径
 	if !models.UpdateUserInfo(userInfo, map[string]interface{}{"avatar_url": filePath}) {
-		appG.Response(http.StatusOK, e.FAIL, nil)
+		appG.Response(http.StatusOK, e.UpdateFailed, nil)
 		return
 	}
 
