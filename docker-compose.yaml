@@ -1,0 +1,9 @@
+version: "2"
+services:
+  mangmang:
+    image: mangmang:latest
+    build: .
+    container_name: mangmang
+    restart: always
+    ports:
+      - "3010:80"
