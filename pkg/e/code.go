@@ -18,7 +18,9 @@ const (
 	OldPasswordError         = 400107 // 旧密码错误
 	NoResourcesFound         = 400108 // 没有找到资源
 	AccountDoesNotExist      = 400109 //账户不存在
-	BusinessCardCoesNotExist = 400110 //名片不存在
+	BusinessCardDoesNotExist = 400110 //名片不存在
+	ImageByteIsTooLarge      = 400111 // 图片过大
+	ImageFormatIsIncorrect   = 400112 // 图片格式不正确
 )
 
 type Msg struct {

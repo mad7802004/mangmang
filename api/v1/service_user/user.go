@@ -71,11 +71,11 @@ func GetVerificationCode(c *gin.Context) {
 // 用户手机号注册
 func PhoneRegister(c *gin.Context) {
 	var obj struct {
-		Name      string `json:"name"binding:"max=20"`
-		Phone     string `json:"phone"binding:"eq=11"`
+		//Name      string `json:"name"binding:"max=20"`
+		Phone     string `json:"phone"binding:"len=11"`
 		PassWord1 string `json:"pass_word_1"binding:"min=6"`
 		PassWord2 string `json:"pass_word_2"binding:"min=6"`
-		Code      string `json:"code"binding:"eq=6"`
+		Code      string `json:"code"binding:"len=6"`
 	}
 	appG := app.New(c)
 
@@ -107,7 +107,7 @@ func PhoneRegister(c *gin.Context) {
 
 	newUser := &models.User{
 		Id:    userId,
-		Name:  obj.Name,
+		Name:  utils.GetRandName(8, "A0"),
 		Phone: obj.Phone,
 	}
 
@@ -124,7 +124,7 @@ func PhoneRegister(c *gin.Context) {
 		return
 	}
 
-	appG.Response(http.StatusOK, e.SUCCESS, nil)
+	appG.Response(http.StatusOK, e.SUCCESS, newUser)
 	return
 }
 
@@ -292,6 +292,20 @@ func UploadAvatar(c *gin.Context) {
 		appG.Response(http.StatusOK, e.InvalidParameter, nil)
 		return
 	}
+
+	// 判断文件格式是否正确
+	fileSuffix := path.Ext(file.Filename)
+	if fileSuffix != ".jpg" && fileSuffix != ".png" {
+		appG.Response(http.StatusOK, e.ImageFormatIsIncorrect, nil)
+		return
+	}
+
+	// 判断图片大小
+	if file.Size/1024 > 40 {
+		appG.Response(http.StatusOK, e.ImageByteIsTooLarge, nil)
+		return
+	}
+
 	// 用户不存在
 	userInfo, err := models.FindUserIdInfo(userId)
 	if err != nil {
@@ -300,7 +314,7 @@ func UploadAvatar(c *gin.Context) {
 	}
 
 	// 拼接路径
-	filePath := path.Join(setting.AppSetting.AvatarPath, file.Filename)
+	filePath := path.Join(setting.AppSetting.AvatarPath, userId+fileSuffix)
 	err = c.SaveUploadedFile(file, filePath)
 	if err != nil {
 		appG.Response(http.StatusOK, e.FAIL, nil)

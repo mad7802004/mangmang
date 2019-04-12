@@ -18,7 +18,9 @@ var ZhCnMsgFlags = map[int]string{
 	OldPasswordError:         "旧密码错误",
 	NoResourcesFound:         "没有找到资源",
 	AccountDoesNotExist:      "账户不存在",
-	BusinessCardCoesNotExist: "名片不存在",
+	BusinessCardDoesNotExist: "名片不存在",
+	ImageByteIsTooLarge:    "图片最大不超过40KB",
+	ImageFormatIsIncorrect: "图片格式不正确",
 }
 
 var EnMsgFlags = map[int]string{

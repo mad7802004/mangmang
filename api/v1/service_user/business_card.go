@@ -104,7 +104,7 @@ func UpdateBusinessCard(c *gin.Context) {
 	// 判断名片是否存在
 	businessCard, err := models.FindBusinessCard(obj.Id)
 	if err != nil {
-		appG.Response(http.StatusOK, e.BusinessCardCoesNotExist, nil)
+		appG.Response(http.StatusOK, e.BusinessCardDoesNotExist, nil)
 		return
 	}
 	// 更新名片
@@ -131,7 +131,7 @@ func DeleteBusinessCard(c *gin.Context) {
 	// 判断名片是否存在
 	businessCard, err := models.FindBusinessCard(key)
 	if err != nil {
-		appG.Response(http.StatusOK, e.BusinessCardCoesNotExist, nil)
+		appG.Response(http.StatusOK, e.BusinessCardDoesNotExist, nil)
 		return
 	}
 	// 删除名片

@@ -9,8 +9,7 @@ services:
       - "3010:80"
     links:
       - mangmang-redis
-    external_links:
-      - qzq-mysql
+      -
   mangmang-redis:
     image: redis:alpine
     container_name: mangmang_redis
