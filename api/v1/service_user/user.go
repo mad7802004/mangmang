@@ -330,3 +330,28 @@ func UploadAvatar(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
 	return
 }
+
+// 搜索用户
+func SearchUser(c *gin.Context) {
+	appG := app.New(c)
+	name := c.Query("name")
+
+	if name == "" {
+		appG.Response(http.StatusOK, e.InvalidParameter, nil)
+		return
+	}
+
+	// 获取分页
+	page, size := app.GetPageSize(c)
+	users, total, err := models.FindNameUser(name, page, size)
+	// 未找到数据
+	if err != nil || len(users) == 0 {
+		appG.AddField("total", total)
+		appG.Response(http.StatusOK, e.NoResourcesFound, nil)
+		return
+	}
+
+	appG.AddField("total", total)
+	appG.Response(http.StatusOK, e.SUCCESS, users)
+	return
+}

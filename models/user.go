@@ -87,6 +87,22 @@ func FindUserIdInfo(userId string) (*User, error) {
 	return &user, nil
 }
 
+// 根据用户名模糊搜索
+func FindNameUser(name string, page, size int) ([]*User, int, error) {
+	var users []*User
+	var total int
+
+	name = "%" + name + "%"
+	query := Orm.Model(&User{}).Where("name like ?", name)
+
+	err := query.Offset((page - 1) * size).Limit(size).
+		Scan(&users).Error
+	if err != nil || len(users) == 0 {
+		return nil, 0, err
+	}
+	query.Count(&total)
+	return users, total, nil
+}
 
 // 更新用户信息
 func UpdateUserInfo(user *User, data interface{}) bool {
