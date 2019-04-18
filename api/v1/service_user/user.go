@@ -106,7 +106,7 @@ func PhoneRegister(c *gin.Context) {
 	userId := utils.GetUUID()
 
 	newUser := &models.User{
-		Id:    userId,
+		UserId:    userId,
 		Name:  utils.GetRandName(8, "A0"),
 		Phone: obj.Phone,
 	}

@@ -87,13 +87,13 @@ func CreateBusinessCard(c *gin.Context) {
 // 更新个人名片
 func UpdateBusinessCard(c *gin.Context) {
 	var obj struct {
-		Id       string `json:"id"binding:"uuid4"`
-		Name     string `json:"name"binding:"max=10"`
-		Company  string `json:"company"binding:"max=255"`
-		Position string `json:"position"binding:"max=255"`
-		Phone    string `json:"phone"binding:"len=11"`
-		Qq       string `json:"qq"`
-		Wx       string `json:"wx"`
+		BusinessId string `json:"business_id"binding:"uuid4"`
+		Name       string `json:"name"binding:"max=10"`
+		Company    string `json:"company"binding:"max=255"`
+		Position   string `json:"position"binding:"max=255"`
+		Phone      string `json:"phone"binding:"len=11"`
+		Qq         string `json:"qq"`
+		Wx         string `json:"wx"`
 	}
 	appG := app.New(c)
 	// 解析参数
@@ -102,7 +102,7 @@ func UpdateBusinessCard(c *gin.Context) {
 		return
 	}
 	// 判断名片是否存在
-	businessCard, err := models.FindBusinessCard(obj.Id)
+	businessCard, err := models.FindBusinessCard(obj.BusinessId)
 	if err != nil {
 		appG.Response(http.StatusOK, e.BusinessCardDoesNotExist, nil)
 		return

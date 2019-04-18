@@ -7,17 +7,17 @@ import (
 
 // 用户表
 type User struct {
-	Id         string         `json:"id"gorm:"primary_key"` // id
-	Name       string         `json:"name"`                 // 昵称
-	AvatarUrl  string         `json:"avatar_url"`           // 头像链接
-	Email      string         `json:"email"`                // 邮箱
-	Phone      string         `json:"phone"`                // 手机号
-	Sex        int8           `json:"sex"gorm:"default"`    // 性别
-	Birthday   utils.JSONDate `json:"birthday"`             // 生日
-	Address    string         `json:"address"`              // 地址
-	CreateTime utils.JSONTime `json:"-"`                    // 创建日期
-	UpdateTime utils.JSONTime `json:"-"`                    // 更新日期
-	DataStatus int8           `json:"-"gorm:"default" `     // 用户状态
+	UserId     string         `json:"user_id"gorm:"primary_key"` // id
+	Name       string         `json:"name"`                      // 昵称
+	AvatarUrl  string         `json:"avatar_url"`                // 头像链接
+	Email      string         `json:"email"`                     // 邮箱
+	Phone      string         `json:"phone"`                     // 手机号
+	Sex        int8           `json:"sex"gorm:"default"`         // 性别
+	Birthday   utils.JSONDate `json:"birthday"`                  // 生日
+	Address    string         `json:"address"`                   // 地址
+	CreateTime utils.JSONTime `json:"-"`                         // 创建日期
+	UpdateTime utils.JSONTime `json:"-"`                         // 更新日期
+	DataStatus int8           `json:"-"gorm:"default"`           // 用户状态
 }
 
 // 用户登录授权表
@@ -80,7 +80,7 @@ func FindUserIdLoginMethod(userId string) (*UserLoginMethod, error) {
 // 根据ID查询用户信息
 func FindUserIdInfo(userId string) (*User, error) {
 	var user User
-	err := Orm.Model(&User{}).Where("id = ? and data_status=?", userId, e.Enable).Find(&user).Error
+	err := Orm.Model(&User{}).Where("user_id = ? and data_status=?", userId, e.Enable).Find(&user).Error
 	if err != nil {
 		return nil, err
 	}

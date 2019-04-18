@@ -7,17 +7,17 @@ import (
 
 // 名片表
 type BusinessCard struct {
-	Id         string         `json:"id"gorm:"primary_key"` // id
-	UserId     string         `json:"user_id"`              // 用户ID
-	Name       string         `json:"name"`                 // 姓名
-	Company    string         `json:"company"`              // 公司
-	Position   string         `json:"position"`             // 职位
-	Phone      string         `json:"phone"`                // 电话
-	Qq         string         `json:"qq"`                   // QQ号
-	Wx         string         `json:"wx"`                   // 微信号
-	CreateTime utils.JSONTime `json:"create_time"`          // 创建时间
-	UpdateTime utils.JSONTime `json:"update_time"`          // 更新时间
-	DataStatus int8           `json:"-"gorm:"default"`      // 0删除，1有效
+	BusinessId string         `json:"business_id"gorm:"primary_key"` // id
+	UserId     string         `json:"user_id"`                       // 用户ID
+	Name       string         `json:"name"`                          // 姓名
+	Company    string         `json:"company"`                       // 公司
+	Position   string         `json:"position"`                      // 职位
+	Phone      string         `json:"phone"`                         // 电话
+	Qq         string         `json:"qq"`                            // QQ号
+	Wx         string         `json:"wx"`                            // 微信号
+	CreateTime utils.JSONTime `json:"create_time"`                   // 创建时间
+	UpdateTime utils.JSONTime `json:"update_time"`                   // 更新时间
+	DataStatus int8           `json:"-"gorm:"default"`               // 0删除，1有效
 }
 
 // 根据用户ID查询用户名片
@@ -39,7 +39,7 @@ func FindUserBusinessCard(userId string, page, size int) ([]*BusinessCard, int, 
 // 根据名片ID查询用户名片
 func FindBusinessCard(id string) (*BusinessCard, error) {
 	var businessCard BusinessCard
-	err := Orm.Model(&BusinessCard{}).Where("id = ? and data_status=?", id, e.Enable).Find(&businessCard).Error
+	err := Orm.Model(&BusinessCard{}).Where("business_id = ? and data_status=?", id, e.Enable).Find(&businessCard).Error
 	if err != nil {
 		return nil, err
 	}

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50628
 File Encoding         : 65001
 
-Date: 2019-04-03 18:07:32
+Date: 2019-04-18 17:54:29
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -20,7 +20,7 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `business_card`;
 CREATE TABLE `business_card` (
-  `id` varchar(36) NOT NULL,
+  `business_id` varchar(36) NOT NULL,
   `user_id` varchar(36) NOT NULL COMMENT '用户ID',
   `name` varchar(50) NOT NULL COMMENT '姓名',
   `company` varchar(255) NOT NULL COMMENT '公司',
@@ -31,7 +31,7 @@ CREATE TABLE `business_card` (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NOT NULL COMMENT '更新时间',
   `data_status` smallint(1) NOT NULL DEFAULT '1' COMMENT '0删除，1有效',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`business_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `business_card_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='电子名片表';
@@ -46,14 +46,14 @@ CREATE TABLE `business_card` (
 DROP TABLE IF EXISTS `mechanism`;
 CREATE TABLE `mechanism` (
   `id` varchar(36) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `address` varchar(255) DEFAULT NULL,
-  `phone` varchar(20) DEFAULT NULL,
-  `create_time` datetime NOT NULL,
-  `update_time` datetime NOT NULL,
+  `name` varchar(255) NOT NULL COMMENT '公司名字',
+  `address` varchar(255) DEFAULT NULL COMMENT '地址',
+  `phone` varchar(20) DEFAULT NULL COMMENT '电话',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '更新时间',
   `data_status` smallint(1) NOT NULL DEFAULT '1' COMMENT '状态0有效，1无效',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公司';
 
 -- ----------------------------
 -- Records of mechanism
@@ -64,13 +64,13 @@ CREATE TABLE `mechanism` (
 -- ----------------------------
 DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project` (
-  `id` varchar(36) NOT NULL,
-  `name` varchar(50) NOT NULL COMMENT '项目名称',
-  `description` varchar(255) DEFAULT NULL COMMENT '项目描述',
+  `project_id` varchar(36) NOT NULL,
+  `project_name` varchar(50) NOT NULL COMMENT '项目名称',
+  `project_content` text COMMENT '项目描述',
   `create_time` datetime NOT NULL,
   `update_time` datetime NOT NULL COMMENT '更新时间',
   `data_status` smallint(1) NOT NULL DEFAULT '1' COMMENT '0删除或无效，1有效',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`project_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -82,12 +82,13 @@ CREATE TABLE `project` (
 -- ----------------------------
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
-  `id` varchar(36) NOT NULL,
-  `name` varchar(50) NOT NULL COMMENT '角色名称',
+  `role_id` varchar(36) NOT NULL,
+  `role_level` int(11) NOT NULL DEFAULT '1' COMMENT '权限大小',
+  `role_name` varchar(50) NOT NULL COMMENT '角色名称',
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NOT NULL COMMENT '更新时间',
   `data_status` smallint(1) NOT NULL DEFAULT '1' COMMENT '0无效，1有效',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -99,16 +100,22 @@ CREATE TABLE `role` (
 -- ----------------------------
 DROP TABLE IF EXISTS `task`;
 CREATE TABLE `task` (
-  `id` varchar(36) NOT NULL,
+  `task_id` varchar(36) NOT NULL,
+  `father_task_id` varchar(36) DEFAULT NULL COMMENT '父任务',
   `project_id` varchar(36) NOT NULL COMMENT '项目ID',
-  `name` varchar(255) NOT NULL,
-  `body` varchar(255) NOT NULL COMMENT '任务内容',
+  `task_name` varchar(255) NOT NULL,
+  `task_type` varchar(10) NOT NULL DEFAULT '需求' COMMENT '任务类型',
+  `task_content` text COMMENT '任务内容',
+  `task_schedule` int(11) NOT NULL DEFAULT '0' COMMENT '进度',
+  `task_status` varchar(10) NOT NULL DEFAULT '新建' COMMENT '任务状态',
+  `starting_time` datetime DEFAULT NULL COMMENT '开始时间',
+  `planned_completion_time` datetime DEFAULT NULL COMMENT '计划完成时间',
   `create_time` datetime NOT NULL,
   `update_time` datetime NOT NULL,
   `data_status` smallint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`task_id`),
   KEY `project_id` (`project_id`),
-  CONSTRAINT `task_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
+  CONSTRAINT `task_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`project_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -179,8 +186,8 @@ CREATE TABLE `user_project_mapping` (
   KEY `project_id` (`project_id`),
   KEY `role_id` (`role_id`),
   CONSTRAINT `user_project_mapping_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  CONSTRAINT `user_project_mapping_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  CONSTRAINT `user_project_mapping_ibfk_3` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`)
+  CONSTRAINT `user_project_mapping_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `project` (`project_id`),
+  CONSTRAINT `user_project_mapping_ibfk_3` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
