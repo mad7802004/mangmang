@@ -1,10 +1,11 @@
-package api
+package app
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/mangmang/api/v1/service_user"
-	"github.com/mangmang/api/web"
+	"github.com/mangmang/app/v1/service_user"
+	"github.com/mangmang/app/website"
 	"github.com/mangmang/pkg/setting"
+	"net/http"
 )
 
 func InitRouter() *gin.Engine {
@@ -13,10 +14,11 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Recovery())
 
 	gin.SetMode(setting.ServerSetting.RunMode)
-	r.LoadHTMLGlob("templates/index.html")
+	r.StaticFS("/static", http.Dir("website/static"))
+	r.LoadHTMLGlob("website/templates/*")
 
-	r.GET("/", web.Home)
-	r.GET("/home", web.Home)
+	r.GET("/", website.Home)
+	r.GET("/home", website.Home)
 
 	apiV1 := r.Group("api/v1")
 	{

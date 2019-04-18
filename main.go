@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/mangmang/api"
+	"github.com/mangmang/app"
 	"github.com/mangmang/models"
 	"github.com/mangmang/pkg/gredis"
 	"github.com/mangmang/pkg/setting"
@@ -14,7 +14,7 @@ func main() {
 	models.Setup()
 	gredis.Setup()
 
-	router := api.InitRouter()
+	router := app.InitRouter()
 
 	s := &http.Server{
 		Addr:           fmt.Sprintf(":%d", setting.ServerSetting.HTTPPort),
