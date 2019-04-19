@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50628
 File Encoding         : 65001
 
-Date: 2019-04-18 17:54:29
+Date: 2019-04-19 11:09:08
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -33,7 +33,7 @@ CREATE TABLE `business_card` (
   `data_status` smallint(1) NOT NULL DEFAULT '1' COMMENT '0删除，1有效',
   PRIMARY KEY (`business_id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `business_card_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `business_card_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='电子名片表';
 
 -- ----------------------------
@@ -127,7 +127,7 @@ CREATE TABLE `task` (
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
-  `id` varchar(36) NOT NULL COMMENT '用户ID',
+  `user_id` varchar(36) NOT NULL COMMENT '用户ID',
   `name` varchar(20) NOT NULL COMMENT '用户名',
   `avatar_url` varchar(255) DEFAULT NULL COMMENT '头像',
   `email` varchar(255) DEFAULT NULL COMMENT '邮箱',
@@ -138,7 +138,7 @@ CREATE TABLE `user` (
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `data_status` smallint(1) NOT NULL DEFAULT '1' COMMENT '数据状态',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户信息表';
 
 -- ----------------------------
@@ -161,7 +161,7 @@ CREATE TABLE `user_login_method` (
   `data_status` smallint(1) NOT NULL DEFAULT '1' COMMENT '账户状态0禁用,1有效',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `user_login_method_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `user_login_method_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户登录方式表';
 
 -- ----------------------------
@@ -185,7 +185,7 @@ CREATE TABLE `user_project_mapping` (
   KEY `user_id` (`user_id`),
   KEY `project_id` (`project_id`),
   KEY `role_id` (`role_id`),
-  CONSTRAINT `user_project_mapping_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `user_project_mapping_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
   CONSTRAINT `user_project_mapping_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `project` (`project_id`),
   CONSTRAINT `user_project_mapping_ibfk_3` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

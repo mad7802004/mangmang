@@ -11,3 +11,9 @@ func Home(c *gin.Context) {
 		"title": "MangMang",
 	})
 }
+
+func Login(c *gin.Context) {
+	c.HTML(http.StatusOK, "login.html", gin.H{
+		"title": "MangMang",
+	})
+}

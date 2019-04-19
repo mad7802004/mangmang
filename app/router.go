@@ -19,6 +19,7 @@ func InitRouter() *gin.Engine {
 
 	r.GET("/", website.Home)
 	r.GET("/home", website.Home)
+	r.GET("/login", website.Login)
 
 	apiV1 := r.Group("api/v1")
 	{

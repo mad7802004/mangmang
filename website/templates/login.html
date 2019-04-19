@@ -11,16 +11,27 @@
     <script src="../static/js/home.js"></script>
 </head>
 <body style="background-color: #eee">
-
 <div class="jumbotron header-center">
     <div class="container">
         <h1>{{.title}}</h1>
-        <br>
-        <h2>简洁、高效、有序、团队</h2>
-        <br>
-        <br>
-        <a class="btn btn-link btn-lg" href="/login" type="button">进入管理</a>
     </div>
+</div>
+
+<div class="container">
+    <div style="width: 200px;margin-left: 40%;">
+        <form class="from-horizontal">
+            <div class="form-group">
+                <label for="inputPhone">账号</label>
+                <input type="text" class="form-control" id="inputPhone" placeholder="手机号码" maxlength="11">
+            </div>
+            <div class="form-group">
+                <label for="inputPassWord">密码</label>
+                <input type="password" class="form-control" id="inputPassWord" placeholder="密码">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+    </div>
+
 </div>
 </body>
 </html>
