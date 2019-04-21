@@ -2,13 +2,13 @@
 产品目的：个人用户、公司管理、项目管理
 
 
-# 启动前置条件
+## 启动前置条件
 1. mysql
 2. docker
 3. docker-compose
 
 
-# 部署
+## 部署
 1. 拉取仓库
     ```
     git https://github.com/qzq1111/mangmang.git
@@ -26,7 +26,7 @@
     ```
     http://127.0.0.1:3010
     ```
-# 配置
+## 配置
 1. 修改配置文件 conf/app.ini
     ```
     # app 通用配置
@@ -67,7 +67,9 @@
     docker-compose up -d
     ```
 
-# 功能
+## 功能
 - 个人管理
 - 公司管理
 - 项目管理
+## 感谢
+感谢[@EDDYCJY](https://github.com/EDDYCJY)的文章[go-gin-example](https://github.com/EDDYCJY/go-gin-example).
