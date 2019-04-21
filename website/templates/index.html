@@ -4,22 +4,37 @@
     <meta charset="UTF-8">
     <title>MangMang</title>
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link type="text/css" rel="stylesheet" href="../static/css/home.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+          integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="../static/css/index.css">
     <script src="../static/jquery/jquery-3.3.1.min.js"></script>
-    <script src="../static/js/home.js"></script>
+    <script src="../static/js/index.js"></script>
 </head>
-<body style="background-color: #eee">
+<body>
 
 <div class="jumbotron header-center">
     <div class="container">
-        <h1>{{.title}}</h1>
-        <br>
-        <h2>简洁、高效、有序、团队</h2>
-        <br>
-        <br>
-        <a class="btn btn-link btn-lg" href="/login" type="button">进入管理</a>
+        <h1>MangMang</h1>
+    </div>
+</div>
+<div class="container">
+    <div class="login-box">
+        <form class="from-horizontal" action="">
+            <div class="form-group">
+                <label for="inputPhone">账号</label>
+                <input type="text" class="form-control" id="inputPhone" placeholder="手机号码" maxlength="11">
+            </div>
+            <div class="form-group">
+                <label for="inputPassWord">密码</label>
+                <input type="password" class="form-control" id="inputPassWord" placeholder="密码">
+            </div>
+            <div class="form-group">
+                <p id="errMsg" style="visibility: hidden;color: red"></p>
+            </div>
+            <div class="form-group">
+                <a type="submit" class="btn btn-default" onclick="login()">登录</a>
+            </div>
+        </form>
     </div>
 </div>
 </body>

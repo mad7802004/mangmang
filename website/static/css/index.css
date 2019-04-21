@@ -1,0 +1,13 @@
+body{
+    background-color: #eee
+}
+.header-center {
+    text-align: center;
+}
+
+.login-box {
+    width: 251px;
+    margin-left: 40%;
+    margin-right: 40%;
+}
+

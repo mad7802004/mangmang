@@ -33,3 +33,19 @@ func JWT() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+func CheckWebLogin() gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+		userId, err := c.Cookie("user_id")
+		if err != nil {
+			c.Redirect(http.StatusFound, "/")
+			c.Abort()
+			return
+		}
+		c.Set("user_id", userId)
+		c.Next()
+
+	}
+
+}

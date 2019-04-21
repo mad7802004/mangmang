@@ -13,6 +13,12 @@ func GetBusinessCard(c *gin.Context) {
 	appG := app.New(c)
 	key := c.Param("key")
 	userId := c.Query("user_id")
+	// 用户未填
+	if userId == "" {
+		appG.Response(http.StatusOK, e.InvalidParameter, nil)
+		return
+	}
+
 	// 判断是否查询一个名片
 	if key != "" {
 		query, err := models.FindBusinessCard(key)
@@ -23,11 +29,7 @@ func GetBusinessCard(c *gin.Context) {
 		appG.Response(http.StatusOK, e.SUCCESS, query)
 		return
 	}
-	// 用户未填
-	if userId == "" {
-		appG.Response(http.StatusOK, e.InvalidParameter, nil)
-		return
-	}
+
 	// 获取分页
 	page, size := app.GetPageSize(c)
 	data, total, err := models.FindUserBusinessCard(userId, page, size)

@@ -1,19 +1,18 @@
 package website
 
 import (
+	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
+	"github.com/mangmang/models"
 	"net/http"
 )
 
-func Home(c *gin.Context) {
-
-	c.HTML(http.StatusOK, "index.html", gin.H{
-		"title": "MangMang",
-	})
+func Index(c *gin.Context) {
+	c.HTML(http.StatusOK, "index.html", gin.H{})
 }
 
-func Login(c *gin.Context) {
-	c.HTML(http.StatusOK, "login.html", gin.H{
-		"title": "MangMang",
-	})
+func Home(c *gin.Context) {
+	userId := com.ToStr(c.MustGet("user_id"))
+	userInfo, _ := models.FindUserIdInfo(userId)
+	c.HTML(http.StatusOK, "home.html", userInfo)
 }

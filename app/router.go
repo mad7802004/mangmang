@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mangmang/app/v1/service_user"
 	"github.com/mangmang/app/website"
+	"github.com/mangmang/middleware"
 	"github.com/mangmang/pkg/setting"
 	"net/http"
 )
@@ -17,9 +18,8 @@ func InitRouter() *gin.Engine {
 	r.StaticFS("/static", http.Dir("website/static"))
 	r.LoadHTMLGlob("website/templates/*")
 
-	r.GET("/", website.Home)
-	r.GET("/home", website.Home)
-	r.GET("/login", website.Login)
+	r.GET("/", website.Index)
+	r.GET("/home", middleware.CheckWebLogin(), website.Home)
 
 	apiV1 := r.Group("api/v1")
 	{
