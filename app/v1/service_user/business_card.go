@@ -48,11 +48,11 @@ func GetBusinessCard(c *gin.Context) {
 // 新建个人名片
 func CreateBusinessCard(c *gin.Context) {
 	var obj struct {
-		UserId   string `json:"user_id"binding:"uuid4"`
-		Name     string `json:"name"binding:"max=10"`
-		Company  string `json:"company"binding:"max=255"`
-		Position string `json:"position"binding:"max=255"`
-		Phone    string `json:"phone"binding:"len=11"`
+		UserId   string `json:"user_id"binding:"required,uuid4"`
+		Name     string `json:"name"binding:"required,max=10"`
+		Company  string `json:"company"binding:"required,max=255"`
+		Position string `json:"position"binding:"required,max=255"`
+		Phone    string `json:"phone"binding:"required,len=11"`
 		Qq       string `json:"qq"`
 		Wx       string `json:"wx"`
 	}
@@ -89,22 +89,24 @@ func CreateBusinessCard(c *gin.Context) {
 // 更新个人名片
 func UpdateBusinessCard(c *gin.Context) {
 	var obj struct {
-		BusinessId string `json:"business_id"binding:"uuid4"`
-		Name       string `json:"name"binding:"max=10"`
-		Company    string `json:"company"binding:"max=255"`
-		Position   string `json:"position"binding:"max=255"`
-		Phone      string `json:"phone"binding:"len=11"`
-		Qq         string `json:"qq"`
-		Wx         string `json:"wx"`
+		Name     string `json:"name"binding:"required,max=10"`
+		Company  string `json:"company"binding:"required,max=255"`
+		Position string `json:"position"binding:"required,max=255"`
+		Phone    string `json:"phone"binding:"required,len=11"`
+		Qq       string `json:"qq"`
+		Wx       string `json:"wx"`
 	}
 	appG := app.New(c)
-	// 解析参数
-	if c.ShouldBindJSON(&obj) != nil {
+	key := c.Param("key")
+
+	// 解析参数或者key是否为空
+	if c.ShouldBindJSON(&obj) != nil || key == "" {
 		appG.Response(http.StatusOK, e.InvalidParameter, nil)
 		return
 	}
+
 	// 判断名片是否存在
-	businessCard, err := models.FindBusinessCard(obj.BusinessId)
+	businessCard, err := models.FindBusinessCard(key)
 	if err != nil {
 		appG.Response(http.StatusOK, e.BusinessCardDoesNotExist, nil)
 		return

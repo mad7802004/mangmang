@@ -9,7 +9,7 @@ services:
       - "3010:80"
     links:
       - mangmang-redis
-      -
+
   mangmang-redis:
     image: redis:alpine
     container_name: mangmang_redis

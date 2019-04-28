@@ -39,7 +39,6 @@ func Setup() {
 	Orm.Callback().Create().Replace("gorm:update_time_stamp", updateTimeStampForCreateCallback)
 	Orm.Callback().Update().Replace("gorm:update_time_stamp", updateTimeStampForUpdateCallback)
 	Orm.Callback().Create().Replace("gorm:before_create", defaultUuidCreateCallback)
-
 }
 
 func CloseDB() {
@@ -48,11 +47,10 @@ func CloseDB() {
 
 func defaultUuidCreateCallback(scope *gorm.Scope) {
 	if !scope.HasError() {
-		Id := utils.GetUUID()
-		if IdField, ok := scope.FieldByName("Id"); ok {
-			if IdField.IsBlank {
-				_ = IdField.Set(Id)
-			}
+		if scope.PrimaryKeyZero() {
+			Id := utils.GetUUID()
+			IdField := scope.PrimaryKey()
+			_ = scope.SetColumn(IdField, Id)
 		}
 	}
 

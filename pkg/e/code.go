@@ -21,6 +21,9 @@ const (
 	BusinessCardDoesNotExist = 400110 //名片不存在
 	ImageByteIsTooLarge      = 400111 // 图片过大
 	ImageFormatIsIncorrect   = 400112 // 图片格式不正确
+	RoleDoesNotExist         = 400113 // 角色不存在
+	ProjectDoesNotExist      = 400114 // 项目不存在
+	ProjectUserExist         = 400115 //用户已存在该项目中，请勿重复添加
 )
 
 type Msg struct {

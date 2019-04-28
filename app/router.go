@@ -2,6 +2,8 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/mangmang/app/v1/service_project"
+	"github.com/mangmang/app/v1/service_role"
 	"github.com/mangmang/app/v1/service_user"
 	"github.com/mangmang/app/website"
 	"github.com/mangmang/middleware"
@@ -36,8 +38,24 @@ func InitRouter() *gin.Engine {
 		apiV1.GET("/user/businessCard", service_user.GetBusinessCard)
 		apiV1.GET("/user/businessCard/:key", service_user.GetBusinessCard)
 		apiV1.POST("/user/businessCard", service_user.CreateBusinessCard)
-		apiV1.PUT("/user/businessCard", service_user.UpdateBusinessCard)
+		apiV1.PUT("/user/businessCard/:key", service_user.UpdateBusinessCard)
 		apiV1.DELETE("/user/businessCard/:key", service_user.DeleteBusinessCard)
+
+		apiV1.GET("/role", service_role.GetRole)
+		apiV1.GET("/role/:key", service_role.GetRole)
+		apiV1.POST("/role", service_role.CreateRole)
+		apiV1.PUT("/role/:key", service_role.UpadteRole)
+
+		apiV1.GET("/project", service_project.GetProject)
+		apiV1.GET("/project/:key", service_project.GetProject)
+		apiV1.POST("/project", service_project.CreateProject)
+		apiV1.PUT("/project/:key", service_project.UpdateProject)
+
+		apiV1.GET("/projectUser", service_project.GetProjectUser)
+		apiV1.POST("/projectUser", service_project.AddProjectUser)
+		apiV1.PUT("/projectUser",service_project.ChangeProjectUserRole)
+		apiV1.DELETE("/projectUser",service_project.RemoveProjectUser)
+
 	}
 
 	return r

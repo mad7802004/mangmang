@@ -72,10 +72,10 @@ func GetVerificationCode(c *gin.Context) {
 func PhoneRegister(c *gin.Context) {
 	var obj struct {
 		//Name      string `json:"name"binding:"max=20"`
-		Phone     string `json:"phone"binding:"len=11"`
-		PassWord1 string `json:"pass_word_1"binding:"min=6"`
-		PassWord2 string `json:"pass_word_2"binding:"min=6"`
-		Code      string `json:"code"binding:"len=6"`
+		Phone     string `json:"phone"binding:"required,len=11"`
+		PassWord1 string `json:"pass_word_1"binding:"required,min=6"`
+		PassWord2 string `json:"pass_word_2"binding:"required,min=6"`
+		Code      string `json:"code"binding:"required,len=6"`
 	}
 	appG := app.New(c)
 
@@ -131,8 +131,8 @@ func PhoneRegister(c *gin.Context) {
 // 用户密码登陆
 func UserLoginAPW(c *gin.Context) {
 	var obj struct {
-		Phone    string `json:"phone"binding:"len=11"`
-		PassWord string `json:"pass_word"binding:"min=6"`
+		Phone    string `json:"phone"binding:"required,len=11"`
+		PassWord string `json:"pass_word"binding:"required,min=6"`
 	}
 	appG := app.New(c)
 	//参数解析失败
@@ -169,8 +169,8 @@ func UserLoginAPW(c *gin.Context) {
 // 用户验证码登陆
 func UserLoginAC(c *gin.Context) {
 	var obj struct {
-		Phone string `json:"phone"binding:"len=11"`
-		Code  string `json:"code"binding:"len=6"`
+		Phone string `json:"phone"binding:"required,len=11"`
+		Code  string `json:"code"binding:"required,len=6"`
 	}
 	appG := app.New(c)
 
@@ -208,10 +208,10 @@ func UserLoginAC(c *gin.Context) {
 // 用户修改密码
 func ChangePassWord(c *gin.Context) {
 	var obj struct {
-		UserId      string `json:"user_id"binding:"uuid4"`
-		OldPassWord string `json:"old_pass_word"binding:"min=6"`
-		PassWord1   string `json:"pass_word_1"binding:"min=6"`
-		PassWord2   string `json:"pass_word_2"binding:"min=6"`
+		UserId      string `json:"user_id"binding:"required,uuid4"`
+		OldPassWord string `json:"old_pass_word"binding:"required,min=6"`
+		PassWord1   string `json:"pass_word_1"binding:"required,min=6"`
+		PassWord2   string `json:"pass_word_2"binding:"required,min=6"`
 	}
 	appG := app.New(c)
 
@@ -251,12 +251,12 @@ func ChangePassWord(c *gin.Context) {
 // 用户修改个人信息
 func ChangeUserInfo(c *gin.Context) {
 	var obj struct {
-		UserId   string         `json:"user_id"binding:"uuid4"`
-		Name     string         `json:"name"binding:"max=20"`
+		UserId   string         `json:"user_id"binding:"required,uuid4"`
+		Name     string         `json:"name"binding:"required,max=20"`
 		Email    string         `json:"email"binding:"omitempty,email"`
-		Sex      int8           `json:"sex"binding:"min=0,max=2"`
+		Sex      int8           `json:"sex"binding:"required,min=0,max=2"`
 		Birthday utils.JSONDate `json:"birthday"`
-		Address  string         `json:"address"binding:"max=100"`
+		Address  string         `json:"address"binding:"required,max=100"`
 	}
 	appG := app.New(c)
 	//参数解析失败

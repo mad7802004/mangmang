@@ -19,8 +19,11 @@ var ZhCnMsgFlags = map[int]string{
 	NoResourcesFound:         "没有找到资源",
 	AccountDoesNotExist:      "账户不存在",
 	BusinessCardDoesNotExist: "名片不存在",
-	ImageByteIsTooLarge:    "图片最大不超过40KB",
-	ImageFormatIsIncorrect: "图片格式不正确",
+	ImageByteIsTooLarge:      "图片最大不超过40KB",
+	ImageFormatIsIncorrect:   "图片格式不正确",
+	RoleDoesNotExist:         "角色不存在",
+	ProjectDoesNotExist:      "项目不存在",
+	ProjectUserExist:         "用户已存在该项目中，请勿重复添加",
 }
 
 var EnMsgFlags = map[int]string{

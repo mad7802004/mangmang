@@ -51,9 +51,10 @@ func GetProject(c *gin.Context) {
 func CreateProject(c *gin.Context) {
 
 	var obj struct {
-		UserId         string `json:"user_id"binding:"uuid4"`
-		ProjectName    string `json:"project_name"binding:"max=20"`
+		UserId         string `json:"user_id"binding:"required,uuid4"`
+		ProjectName    string `json:"project_name"binding:"required,max=20"`
 		ProjectContent string `json:"project_content"`
+		RoleId         string `json:"role_id"binding:"required,uuid4"`
 	}
 
 	appG := app.New(c)
@@ -66,17 +67,28 @@ func CreateProject(c *gin.Context) {
 		appG.Response(http.StatusOK, e.AccountDoesNotExist, nil)
 		return
 	}
+
+	// 判断角色是否存在
+	if !models.IsExistRole(obj.RoleId) {
+		appG.Response(http.StatusOK, e.RoleDoesNotExist, nil)
+		return
+	}
+
+	// 新建项目
 	projectId := utils.GetUUID()
 	newProject := &models.Project{
 		ProjectId:      projectId,
 		ProjectName:    obj.ProjectName,
 		ProjectContent: obj.ProjectContent,
 	}
+
 	newUserProjectMapping := &models.UserProjectMapping{
 		UserId:    obj.UserId,
 		ProjectId: projectId,
-		RoleId:    "1", //TODO:未完成角色绑定
+		RoleId:    obj.RoleId,
 	}
+
+	// 创建项目
 	if !models.Create(newProject, newUserProjectMapping) {
 		appG.Response(http.StatusOK, e.NewFailed, nil)
 		return
@@ -88,38 +100,40 @@ func CreateProject(c *gin.Context) {
 
 // 更新项目
 func UpdateProject(c *gin.Context) {
+	var obj struct {
+		ProjectName    string `json:"project_name"binding:"required,max=20"`
+		ProjectContent string `json:"project_content"`
+	}
 	appG := app.New(c)
+	key := c.Param("key")
+
+	//参数解析失败或者键值为空
+	if c.ShouldBindJSON(&obj) != nil || key == "" {
+		appG.Response(http.StatusOK, e.InvalidParameter, nil)
+		return
+	}
+
+
+	// 查询项目是否存在
+	project, err := models.FindProject(key)
+	if err != nil {
+		appG.Response(http.StatusOK, e.NoResourcesFound, nil)
+		return
+	}
+
+	// 更新项目信息
+	if !models.UpdateProject(project, obj) {
+		appG.Response(http.StatusOK, e.UpdateFailed, nil)
+		return
+	}
 
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
 	return
+
 }
 
-// 删除项目
+// 删除项目 TODO:权限未验证，只有admin才能删除项目且移除所有项目成员
 func DeleteProject(c *gin.Context) {
-	appG := app.New(c)
-
-	appG.Response(http.StatusOK, e.SUCCESS, nil)
-	return
-}
-
-// 添加项目成员
-func AddProjectUser(c *gin.Context) {
-	appG := app.New(c)
-
-	appG.Response(http.StatusOK, e.SUCCESS, nil)
-	return
-}
-
-// 修改项目成员权限
-func ChangeProjectUserRole(c *gin.Context) {
-	appG := app.New(c)
-
-	appG.Response(http.StatusOK, e.SUCCESS, nil)
-	return
-}
-
-// 移除项目成员
-func RemoveProjectUser(c *gin.Context) {
 	appG := app.New(c)
 
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
