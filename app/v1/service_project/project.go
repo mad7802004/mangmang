@@ -86,6 +86,7 @@ func CreateProject(c *gin.Context) {
 		UserId:    obj.UserId,
 		ProjectId: projectId,
 		RoleId:    obj.RoleId,
+		Ownership: 1,
 	}
 
 	// 创建项目
@@ -112,7 +113,6 @@ func UpdateProject(c *gin.Context) {
 		appG.Response(http.StatusOK, e.InvalidParameter, nil)
 		return
 	}
-
 
 	// 查询项目是否存在
 	project, err := models.FindProject(key)
