@@ -18,10 +18,14 @@ func InitRouter() *gin.Engine {
 
 	gin.SetMode(setting.ServerSetting.RunMode)
 	r.StaticFS("/static", http.Dir("website/static"))
-	r.LoadHTMLGlob("website/templates/*")
+	r.LoadHTMLGlob("website/templates/**/*")
 
-	r.GET("/", website.Index)
+	r.GET("/login", website.Login)
+
+	r.GET("/", middleware.CheckWebLogin(), website.Home)
 	r.GET("/home", middleware.CheckWebLogin(), website.Home)
+
+	r.GET("/project", middleware.CheckWebLogin(), website.Project)
 
 	apiV1 := r.Group("api/v1")
 	{
