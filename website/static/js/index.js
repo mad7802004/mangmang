@@ -56,3 +56,23 @@ function checkPassWord(passWord) {
     }
 
 }
+
+
+// 添加项目
+function addProject() {
+
+}
+
+// 点击编辑项目
+function editProject() {
+    $('#editProject').off('show.bs.modal').on('show.bs.modal', function (e) {
+        console.log("点击了。")
+    });
+
+}
+
+// 删除项目
+function deleteProject() {
+
+
+}

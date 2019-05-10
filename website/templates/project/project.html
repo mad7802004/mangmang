@@ -6,47 +6,72 @@
 <div class="container mangmang-content">
     <div class="row">
         <div class="col-md-12">
-            <button class="btn btn-default" role="button" data-toggle="modal" data-target="#addProject">添加项目</button>
+            <a class="btn btn-default" role="button" data-toggle="modal" data-target="#addProject"
+            >添加项目</a>
         </div>
     </div>
     <div class="row">
         <div class="col-md-3">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    示例项目1
+                    <h3>示例项目1</h3>
+                    <div>
+                        描述
+                    </div>
+                    <a class="btn btn-default" data-toggle="modal" data-target="#editProject"
+                       onclick="editProject()">编辑</a>
+                    <a class="btn btn-default" data-toggle="modal" data-target="#deleteProject">删除</a>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    示例项目2
+                    <h3>示例项目1</h3>
+                    <div>
+                        描述
+                    </div>
+                    <a class="btn btn-default" data-toggle="modal" data-target="#editProject"
+                       onclick="editProject()">编辑</a>
+                    <a class="btn btn-default" data-toggle="modal" data-target="#deleteProject">删除</a>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    示例项目3
+                    <h3>示例项目1</h3>
+                    <div>
+                        描述
+                    </div>
+                    <a class="btn btn-default" data-toggle="modal" data-target="#editProject"
+                       onclick="editProject()">编辑</a>
+                    <a class="btn btn-default" data-toggle="modal" data-target="#deleteProject">删除</a>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    示例项目4
+                    <h3>示例项目1</h3>
+                    <div>
+                        描述
+                    </div>
+                    <a class="btn btn-default" data-toggle="modal" data-target="#editProject"
+                       onclick="editProject()">编辑</a>
+                    <a class="btn btn-default" data-toggle="modal" data-target="#deleteProject">删除</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="addProject" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal fade" id="addProject" tabindex="-1" role="dialog" aria-labelledby="addProject">
         <div class="modal-dialog" role="document" style="padding-top: 10%">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                 aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">添加项目</h4>
+                    <h4 class="modal-title">添加项目</h4>
                 </div>
                 <div class="modal-body">
                     ...
@@ -59,6 +84,43 @@
         </div>
     </div>
 
+    <div class="modal fade" id="editProject" tabindex="-1" role="dialog" aria-labelledby="editProject">
+        <div class="modal-dialog" role="document" style="padding-top: 10%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">编辑项目</h4>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteProject" tabindex="-1" role="dialog" aria-labelledby="editProject">
+        <div class="modal-dialog" role="document" style="padding-top: 10%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">删除项目</h4>
+                </div>
+                <div class="modal-body">
+                    是否确定删除项目？
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
 {{template "public/footer" }}
