@@ -6,12 +6,25 @@ import (
 )
 
 type Role struct {
-	RoleId     string         `json:"role_id"gorm:"primary_key"` // 角色ID
-	RoleLevel  int            `json:"role_level"`                // 角色权限
-	RoleName   string         `json:"role_name"`                 // 角色名称
-	CreateTime utils.JSONTime `json:"-"`                         // 创建时间
-	UpdateTime utils.JSONTime `json:"-"`                         // 更新时间
-	DataStatus int8           `json:"-"gorm:"default"`           // 状态
+	RoleId      string         `json:"role_id"gorm:"primary_key"` // 角色ID
+	RoleLevel   int            `json:"role_level"`                // 角色权限
+	RoleName    string         `json:"role_name"`                 // 角色名称
+	CreateTime  utils.JSONTime `json:"-"`                         // 创建时间
+	UpdateTime  utils.JSONTime `json:"-"`                         // 更新时间
+	DefaultFlag int8           `json:"-"gorm:"default"`           // 是否为默认1是0不是
+	DataStatus  int8           `json:"-"gorm:"default"`           // 状态
+}
+
+// 获取默认管理员
+
+func FindAdmin() (*Role, error) {
+	var info Role
+
+	err := Orm.Model(&Role{}).Where("default_flag = ? and role_level=?", 1, 1).Find(&info).Error
+	if err != nil {
+		return nil, err
+	}
+	return &info, nil
 }
 
 // 根据角色ID查询角色

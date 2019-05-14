@@ -11,15 +11,17 @@ function login() {
             data: JSON.stringify({"phone": phone, "pass_word": passWord}),
             success: function (data, status) {
                 if (data.code === 0) {
-                    sessionStorage.setItem("token", data.data.user_id);
+                    sessionStorage.setItem("user_id", data.data.user_id);
                     document.cookie = "user_id=" + data.data.user_id;
                     window.location.href = "/home";
                 } else {
-                    $("#errMsg").html(data.msg).css("visibility", "");
+                    $("#msg").html(data.msg);
+                    $('.toast').toast('show');
                 }
             },
             error: function (data, status) {
-                $("#errMsg").html("服务器发生错误").css("visibility", "");
+                $("#msg").html("服务器发生错误");
+                $('.toast').toast('show');
             }
         });
     }
@@ -31,16 +33,16 @@ function login() {
 function checkPhone(phone) {
     let reg = /^0?(13[0-9]|15[012356789]|17[0678]|18[0123456789]|14[57])[0-9]{8}$/;
     if (phone === "") {
-        $("#errMsg").html("手机号码不能为空").css("visibility", "");
+        $("#phone-err").html("手机号码不能为空").css("color", "red");
         return false
     } else if (phone.length < 11) {
-        $("#errMsg").html("手机号码长度有误").css("visibility", "");
+        $("#phone-err").html("手机号码长度有误").css("color", "red");
         return false
     } else if (!reg.test(phone)) {
-        $("#errMsg").html("手机号不存在").css("visibility", "");
+        $("#phone-err").html("手机号不存在").css("color", "red");
         return false
     } else {
-        $("#errMsg").css("visibility", "hidden");
+        $("#phone-err").html("");
         return true
     }
 }
@@ -48,31 +50,11 @@ function checkPhone(phone) {
 // 检验密码是否正确
 function checkPassWord(passWord) {
     if (passWord === "") {
-        $("#errMsg").html("密码不能为空").css("visibility", "");
+        $("#password-err").html("密码不能为空").css("color", "red");
         return false
     } else {
-        $("#errMsg").css("visibility", "hidden");
+        $("#password-err").html("");
         return true
     }
-
-}
-
-
-// 添加项目
-function addProject() {
-
-}
-
-// 点击编辑项目
-function editProject() {
-    $('#editProject').off('show.bs.modal').on('show.bs.modal', function (e) {
-        console.log("点击了。")
-    });
-
-}
-
-// 删除项目
-function deleteProject() {
-
 
 }

@@ -14,19 +14,20 @@
             <div class="form-group">
                 <label for="inputPhone">账号</label>
                 <input type="text" class="form-control" id="inputPhone" placeholder="手机号码" maxlength="11">
+                <span id="phone-err"></span>
             </div>
             <div class="form-group">
                 <label for="inputPassWord">密码</label>
                 <input type="password" class="form-control" id="inputPassWord" placeholder="密码">
+                <span id="password-err"></span>
             </div>
             <div class="form-group">
-                <p id="errMsg" style="visibility: hidden;color: red"></p>
-            </div>
-            <div class="form-group">
-                <a type="submit" class="btn btn-default" onclick="login()">登录</a>
+                <button type="button" class="btn btn-primary" onclick="login()">登录</button>
             </div>
         </form>
     </div>
 </div>
+{{template "public/errMsg"}}
+<script src="../../static/js/login.js"></script>
 </body>
 </html>

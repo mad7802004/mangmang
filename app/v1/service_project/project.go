@@ -54,7 +54,7 @@ func CreateProject(c *gin.Context) {
 		UserId         string `json:"user_id"binding:"required,uuid4"`
 		ProjectName    string `json:"project_name"binding:"required,max=20"`
 		ProjectContent string `json:"project_content"`
-		RoleId         string `json:"role_id"binding:"required,uuid4"`
+		//RoleId         string `json:"role_id"binding:"required,uuid4"`
 	}
 
 	appG := app.New(c)
@@ -67,9 +67,9 @@ func CreateProject(c *gin.Context) {
 		appG.Response(http.StatusOK, e.AccountDoesNotExist, nil)
 		return
 	}
-
-	// 判断角色是否存在
-	if !models.IsExistRole(obj.RoleId) {
+	// 获取默认admin
+	role, err := models.FindAdmin()
+	if err != nil {
 		appG.Response(http.StatusOK, e.RoleDoesNotExist, nil)
 		return
 	}
@@ -85,7 +85,7 @@ func CreateProject(c *gin.Context) {
 	newUserProjectMapping := &models.UserProjectMapping{
 		UserId:    obj.UserId,
 		ProjectId: projectId,
-		RoleId:    obj.RoleId,
+		RoleId:    role.RoleId,
 		Ownership: 1,
 	}
 
