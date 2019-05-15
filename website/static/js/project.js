@@ -20,9 +20,7 @@ function addProject() {
         success: function (data, status) {
             if (data.code === 0) {
                 $('#openProject').modal('hide');
-                $("#msg").html(data.msg);
-                $('.toast').toast('show');
-                console.log(data.msg)
+                location.reload();
             } else {
                 $('#openProject').modal('hide');
                 $("#msg").html(data.msg);
@@ -37,14 +35,6 @@ function addProject() {
 
 }
 
-// 点击编辑项目
-function editProject() {
-    console.log("点击了。");
-    $('#editProject').on('show.bs.modal', function (e) {
-        console.log("点击了。")
-    });
-
-}
 
 // 删除项目
 function deleteProject() {

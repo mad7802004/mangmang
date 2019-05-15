@@ -1,6 +1,7 @@
 package app
 
 import (
+	//"github.com/Masterminds/sprig"
 	"github.com/gin-gonic/gin"
 	"github.com/mangmang/app/v1/service_project"
 	"github.com/mangmang/app/v1/service_role"
@@ -18,14 +19,14 @@ func InitRouter() *gin.Engine {
 
 	gin.SetMode(setting.ServerSetting.RunMode)
 	r.StaticFS("/static", http.Dir("website/static"))
+	//r.SetFuncMap(sprig.FuncMap())
 	r.LoadHTMLGlob("website/templates/**/*")
 
 	r.GET("/login", website.Login)
-
 	r.GET("/", middleware.CheckWebLogin(), website.Home)
 	r.GET("/home", middleware.CheckWebLogin(), website.Home)
-
 	r.GET("/project", middleware.CheckWebLogin(), website.Project)
+	r.GET("/project/:key", middleware.CheckWebLogin(), website.ProjectInfo)
 
 	apiV1 := r.Group("api/v1")
 	{
@@ -57,8 +58,8 @@ func InitRouter() *gin.Engine {
 
 		apiV1.GET("/projectUser", service_project.GetProjectUser)
 		apiV1.POST("/projectUser", service_project.AddProjectUser)
-		apiV1.PUT("/projectUser",service_project.ChangeProjectUserRole)
-		apiV1.DELETE("/projectUser",service_project.RemoveProjectUser)
+		apiV1.PUT("/projectUser", service_project.ChangeProjectUserRole)
+		apiV1.DELETE("/projectUser", service_project.RemoveProjectUser)
 
 	}
 

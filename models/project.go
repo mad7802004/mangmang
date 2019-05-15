@@ -54,7 +54,7 @@ func FindUserProject(userId string, page, size int) ([]*Project, int, error) {
 	var total int
 	query := Orm.Model(&Project{}).
 		Joins("inner join user_project_mapping on user_project_mapping.project_id=project.project_id ").
-		Where("user_project_mapping.user_id = ?", userId)
+		Where("user_project_mapping.user_id = ?", userId).Order("create_time",false)
 
 	err := query.Offset((page - 1) * size).Limit(size).
 		Find(&project).Error

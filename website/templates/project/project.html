@@ -11,21 +11,18 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <h3>示例项目1</h3>
-                    <div>
-                        描述
+        {{range $index,$value :=.data}}
+            <div class="col-md-3">
+                <div class="card" style="min-height: 200px;margin-top: 40px">
+                    <div class="card-body">
+                        <h3><a href="/project/{{$value.ProjectId}}">{{$value.ProjectName}}</a></h3>
+                        <div>
+                            {{$value.ProjectContent}}
+                        </div>
                     </div>
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#editProject"
-                            onclick="editProject()">编辑
-                    </button>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deleteProject">删除
-                    </button>
                 </div>
             </div>
-        </div>
+        {{end}}
     </div>
 
     <div class="modal fade" id="openProject" tabindex="-1" role="dialog" aria-labelledby="openProject">

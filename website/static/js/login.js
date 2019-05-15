@@ -13,7 +13,7 @@ function login() {
                 if (data.code === 0) {
                     sessionStorage.setItem("user_id", data.data.user_id);
                     document.cookie = "user_id=" + data.data.user_id;
-                    window.location.href = "/home";
+                    location.href = "/home";
                 } else {
                     $("#msg").html(data.msg);
                     $('.toast').toast('show');
