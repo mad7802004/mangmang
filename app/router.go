@@ -1,15 +1,11 @@
 package app
 
 import (
-	//"github.com/Masterminds/sprig"
 	"github.com/gin-gonic/gin"
 	"github.com/mangmang/app/v1/service_project"
 	"github.com/mangmang/app/v1/service_role"
 	"github.com/mangmang/app/v1/service_user"
-	"github.com/mangmang/app/website"
-	"github.com/mangmang/middleware"
 	"github.com/mangmang/pkg/setting"
-	"net/http"
 )
 
 func InitRouter() *gin.Engine {
@@ -18,15 +14,6 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Recovery())
 
 	gin.SetMode(setting.ServerSetting.RunMode)
-	r.StaticFS("/static", http.Dir("website/static"))
-	//r.SetFuncMap(sprig.FuncMap())
-	r.LoadHTMLGlob("website/templates/**/*")
-
-	r.GET("/login", website.Login)
-	r.GET("/", middleware.CheckWebLogin(), website.Home)
-	r.GET("/home", middleware.CheckWebLogin(), website.Home)
-	r.GET("/project", middleware.CheckWebLogin(), website.Project)
-	r.GET("/project/:key", middleware.CheckWebLogin(), website.ProjectInfo)
 
 	apiV1 := r.Group("api/v1")
 	{
