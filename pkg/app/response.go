@@ -7,7 +7,7 @@ import (
 
 type Gin struct {
 	C *gin.Context
-	M *e.Msg
+	M *e.Message
 }
 
 func New(c *gin.Context) *Gin {
@@ -15,14 +15,8 @@ func New(c *gin.Context) *Gin {
 	return &newMsg
 }
 
-func (g *Gin) AddField(key string, value interface{}) {
-	g.M.AddField(key, value)
-}
-
 func (g *Gin) Response(httpCode, errCode int, data interface{}) {
 	g.M.Update(errCode, data)
-	msg := g.M.M
-	delete(msg, "lang")
-	g.C.JSON(httpCode, msg)
+	g.C.JSON(httpCode, g.M)
 	return
 }

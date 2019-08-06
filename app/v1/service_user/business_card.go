@@ -32,15 +32,18 @@ func GetBusinessCard(c *gin.Context) {
 
 	// 获取分页
 	page, size := app.GetPageSize(c)
-	data, total, err := models.FindUserBusinessCard(userId, page, size)
+	businessCard, total, err := models.FindUserBusinessCard(userId, page, size)
 	// 未找到数据
-	if err != nil || len(data) == 0 {
-		appG.AddField("total", total)
+	if err != nil || len(businessCard) == 0 {
 		appG.Response(http.StatusOK, e.NoResourcesFound, nil)
 		return
 	}
-
-	appG.AddField("total", total)
+	var data = map[string]interface{}{
+		"page":           page,
+		"size":           size,
+		"business_card": businessCard,
+		"total":          total,
+	}
 	appG.Response(http.StatusOK, e.SUCCESS, data)
 	return
 }

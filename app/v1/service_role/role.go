@@ -24,15 +24,19 @@ func GetRole(c *gin.Context) {
 	}
 	// 获取分页
 	page, size := app.GetPageSize(c)
-	data, total, err := models.FindRoleList(page, size)
+	roles, total, err := models.FindRoleList(page, size)
 	// 未找到数据
-	if err != nil || len(data) == 0 {
-		appG.AddField("total", total)
+	if err != nil || len(roles) == 0 {
 		appG.Response(http.StatusOK, e.NoResourcesFound, nil)
 		return
 	}
+	data := map[string]interface{}{
+		"roles": roles,
+		"total": total,
+		"size":  size,
+		"page":  page,
+	}
 
-	appG.AddField("total", total)
 	appG.Response(http.StatusOK, e.SUCCESS, data)
 	return
 
@@ -98,7 +102,6 @@ func UpadteRole(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
 	return
 }
-
 
 // 删除角色
 func DeleteRole(c *gin.Context) {

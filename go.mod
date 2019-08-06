@@ -1,24 +1,22 @@
 module github.com/mangmang
 
+go 1.12
+
 require (
-	github.com/Unknwon/com v0.0.0-20190321035513-0fed4efef755
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/gin-contrib/sse v0.0.0-20190301062529-5545eab6dad3 // indirect
-	github.com/gin-gonic/gin v1.3.0
-	github.com/go-ini/ini v1.42.0
+	github.com/gin-gonic/gin v1.4.0
+	github.com/go-ini/ini v1.46.0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gofrs/uuid v3.2.0+incompatible
-	github.com/golang/protobuf v1.3.1 // indirect
 	github.com/gomodule/redigo v2.0.0+incompatible
-	github.com/jinzhu/gorm v1.9.2
-	github.com/jinzhu/inflection v0.0.0-20180308033659-04140366298a // indirect
-	github.com/json-iterator/go v1.1.6 // indirect
-	github.com/mattn/go-isatty v0.0.7 // indirect
-	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
-	github.com/modern-go/reflect2 v1.0.1 // indirect
-	github.com/ugorji/go/codec v0.0.0-20190320090025-2dc34c0b8780 // indirect
-	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
-	gopkg.in/yaml.v2 v2.2.2 // indirect
+	github.com/gopherjs/gopherjs v0.0.0-20190430165422-3e4dfb77656c // indirect
+	github.com/jinzhu/gorm v1.9.10
+	github.com/kr/pretty v0.1.0 // indirect
+	github.com/smartystreets/assertions v1.0.1 // indirect
+	github.com/smartystreets/goconvey v0.0.0-20190731233626-505e41936337 // indirect
+	github.com/unknwon/com v0.0.0-20190804042917-757f69c95f3e
+	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4 // indirect
+	golang.org/x/net v0.0.0-20190724013045-ca1201d0de80 // indirect
+	golang.org/x/sys v0.0.0-20190804053845-51ab0e2deafa // indirect
+	gopkg.in/ini.v1 v1.46.0 // indirect
 )
-
-replace golang.org/x/sys => github.com/golang/sys v0.0.0-20190403152447-81d4e9dc473e

@@ -34,15 +34,18 @@ func GetProject(c *gin.Context) {
 
 	// 获取分页
 	page, size := app.GetPageSize(c)
-	data, total, err := models.FindUserProject(userId, page, size)
+	projects, total, err := models.FindUserProject(userId, page, size)
 	// 未找到数据
-	if err != nil || len(data) == 0 {
-		appG.AddField("total", total)
+	if err != nil || len(projects) == 0 {
 		appG.Response(http.StatusOK, e.NoResourcesFound, nil)
 		return
 	}
-
-	appG.AddField("total", total)
+	data := map[string]interface{}{
+		"roles": projects,
+		"total": total,
+		"size":  size,
+		"page":  page,
+	}
 	appG.Response(http.StatusOK, e.SUCCESS, data)
 	return
 }

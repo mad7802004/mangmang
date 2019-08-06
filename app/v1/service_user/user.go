@@ -2,7 +2,6 @@ package service_user
 
 import (
 	"fmt"
-	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
 	"github.com/mangmang/models"
 	"github.com/mangmang/pkg/app"
@@ -10,6 +9,7 @@ import (
 	"github.com/mangmang/pkg/gredis"
 	"github.com/mangmang/pkg/setting"
 	"github.com/mangmang/pkg/utils"
+	"github.com/unknwon/com"
 	"net/http"
 	"path"
 	"time"
@@ -106,9 +106,9 @@ func PhoneRegister(c *gin.Context) {
 	userId := utils.GetUUID()
 
 	newUser := &models.User{
-		UserId:    userId,
-		Name:  utils.GetRandName(8, "A0"),
-		Phone: obj.Phone,
+		UserId: userId,
+		Name:   utils.GetRandName(8, "A0"),
+		Phone:  obj.Phone,
 	}
 
 	newLoginMethod := &models.UserLoginMethod{
@@ -346,12 +346,36 @@ func SearchUser(c *gin.Context) {
 	users, total, err := models.FindNameUser(name, page, size)
 	// 未找到数据
 	if err != nil || len(users) == 0 {
-		appG.AddField("total", total)
 		appG.Response(http.StatusOK, e.NoResourcesFound, nil)
 		return
 	}
+	data := map[string]interface{}{
+		"page":  page,
+		"size":  size,
+		"total": total,
+		"users": users,
+	}
+	appG.Response(http.StatusOK, e.SUCCESS, data)
+	return
+}
 
-	appG.AddField("total", total)
-	appG.Response(http.StatusOK, e.SUCCESS, users)
+// 获取用户信息
+func GetUserInfo(c *gin.Context) {
+	appG := app.New(c)
+	key := c.Query("key")
+
+	if key == "" {
+		appG.Response(http.StatusOK, e.InvalidParameter, nil)
+		return
+	}
+
+	// 获取用户信息
+	userInfo, err := models.FindUserIdInfo(key)
+	if err != nil {
+		appG.Response(http.StatusOK, e.AccountOrPassWordErr, nil)
+		return
+	}
+
+	appG.Response(http.StatusOK, e.SUCCESS, userInfo)
 	return
 }

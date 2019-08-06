@@ -26,34 +26,32 @@ const (
 	ProjectUserExist         = 400115 //用户已存在该项目中，请勿重复添加
 )
 
-type Msg struct {
-	M map[string]interface{}
+type Message struct {
+	Msg  string      `json:"msg"`
+	Data interface{} `json:"data"`
+	Code int         `json:"code"`
+	Lang string      `json:"-"`
 }
 
-func NewMsg(lang string) *Msg {
-	m := &Msg{make(map[string]interface{}, 0)}
+// 新建消息
+func NewMsg(lang string) *Message {
+	var msg Message
+
 	if lang == "" {
-		m.AddField("lang", "zh_Cn")
+		msg.Lang = "zh_Cn"
 	} else {
-		m.AddField("lang", lang)
+		msg.Lang = lang
 	}
-	m.AddField("code", SUCCESS)
-	m.AddField("msg", GetMsg(SUCCESS, "zh_Cn"))
-	m.AddField("data", nil)
-	return m
-}
 
-func (m *Msg) AddField(key string, e interface{}) {
-	m.M[key] = e
+	msg.Code = SUCCESS
+	msg.Msg = GetMsg(SUCCESS, msg.Lang)
+
+	return &msg
 }
 
 // 修改msg内容
-func (m *Msg) Update(code int, data interface{}) {
-	m.AddField("code", code)
-	m.AddField("data", data)
-	if lang, ok := m.M["lang"]; ok {
-		m.AddField("msg", GetMsg(code, lang.(string)))
-	} else {
-		m.AddField("msg", GetMsg(code, "zh_Cn"))
-	}
+func (m *Message) Update(code int, data interface{}) {
+	m.Msg = GetMsg(code, m.Lang)
+	m.Code = code
+	m.Data = data
 }
