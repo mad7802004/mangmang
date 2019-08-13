@@ -251,12 +251,14 @@ func ChangePassWord(c *gin.Context) {
 // 用户修改个人信息
 func ChangeUserInfo(c *gin.Context) {
 	var obj struct {
-		UserId   string         `json:"user_id"binding:"required,uuid4"`
-		Name     string         `json:"name"binding:"required,max=20"`
-		Email    string         `json:"email"binding:"omitempty,email"`
-		Sex      int8           `json:"sex"binding:"required,min=0,max=2"`
-		Birthday utils.JSONDate `json:"birthday"`
-		Address  string         `json:"address"binding:"required,max=100"`
+		UserId       string         `json:"user_id"binding:"required,uuid4"`
+		Name         string         `json:"name"binding:"required,max=20"`
+		Email        string         `json:"email"binding:"omitempty,email"`
+		Sex          int8           `json:"sex"`
+		Introduction string         `json:"introduction"binding:"omitempty,max=255"`
+		Position     string         `json:"position"binding:"omitempty,max=50"`
+		Birthday     utils.JSONDate `json:"birthday"`
+		Address      string         `json:"address"binding:"required,max=100"`
 	}
 	appG := app.New(c)
 	//参数解析失败

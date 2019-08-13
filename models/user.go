@@ -7,17 +7,19 @@ import (
 
 // 用户表
 type User struct {
-	UserId     string         `json:"user_id"gorm:"primary_key"` // id
-	Name       string         `json:"name"`                      // 昵称
-	AvatarUrl  string         `json:"avatar_url"`                // 头像链接
-	Email      string         `json:"email"`                     // 邮箱
-	Phone      string         `json:"phone"`                     // 手机号
-	Sex        int8           `json:"sex"gorm:"default"`         // 性别
-	Birthday   utils.JSONDate `json:"birthday"`                  // 生日
-	Address    string         `json:"address"`                   // 地址
-	CreateTime utils.JSONTime `json:"-"`                         // 创建日期
-	UpdateTime utils.JSONTime `json:"-"`                         // 更新日期
-	DataStatus int8           `json:"-"gorm:"default"`           // 用户状态
+	UserId       string         `json:"user_id"gorm:"primary_key"` // id
+	Name         string         `json:"name"`                      // 昵称
+	AvatarUrl    string         `json:"avatar_url"`                // 头像链接
+	Email        string         `json:"email"`                     // 邮箱
+	Phone        string         `json:"phone"`                     // 手机号
+	Sex          int8           `json:"sex"gorm:"default"`         // 性别
+	Birthday     utils.JSONDate `json:"birthday"`                  // 生日
+	Address      string         `json:"address"`                   // 地址
+	Introduction string         `json:"introduction"`              // 个性签名
+	Position     string         `json:"position"`                  // 职位
+	CreateTime   utils.JSONTime `json:"-"`                         // 创建日期
+	UpdateTime   utils.JSONTime `json:"-"`                         // 更新日期
+	DataStatus   int8           `json:"-"gorm:"default"`           // 用户状态
 }
 
 // 用户登录授权表
