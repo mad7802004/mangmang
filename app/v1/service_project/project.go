@@ -41,7 +41,7 @@ func GetProject(c *gin.Context) {
 		return
 	}
 	data := map[string]interface{}{
-		"roles": projects,
+		"projects": projects,
 		"total": total,
 		"size":  size,
 		"page":  page,
