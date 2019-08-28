@@ -1,12 +1,15 @@
 package models
 
-import "github.com/mangmang/pkg/utils"
+import (
+	"github.com/mangmang/pkg/utils"
+)
 
 type Task struct {
 	TaskId       string         `json:"task_id"`                     // 任务ID
 	FatherTaskId string         `json:"father_task_id"`              // 父级任务
 	ProjectId    string         `json:"project_id"`                  // 项目ID
 	UserId       string         `json:"user_id"`                     // 任务人员
+	TaskNumber   int            `json:"task_number"`                 // 任务编码
 	TaskName     string         `json:"task_name"`                   // 任务名称
 	TaskPriority int            `json:"task_priority"gorm:"default"` // 任务优先级
 	TaskType     string         `json:"task_type"`                   // 任务类型
@@ -45,4 +48,40 @@ func FindProjectIdTasks(projectId string, page, size int) ([]*Task, int, error) 
 	}
 	query.Count(&total)
 	return tasks, total, nil
+}
+
+// 根据项目ID查询当前项目任务最大编号
+func FindMaxTaskNumber(projectId string, ) int {
+	var result struct {
+		MaxNumber int `json:"max_number"`
+	}
+
+	query := Orm.Model(&Task{}).Select("max(task_number) as max_number").Where("project_id = ?", projectId)
+	err := query.Scan(&result).Error
+	if err != nil {
+		return 0
+	}
+	return result.MaxNumber
+
+}
+
+type FatherTasks struct {
+	TaskId     string `json:"task_id"`
+	TaskNumber int    `json:"task_number"`
+	TaskName   string `json:"task_name"`
+}
+
+// 根据项目ID获取任务列表，用于关联父任务
+func FindFatherTasks(projectId string) ([]*FatherTasks, error) {
+	var fatherTasks []*FatherTasks
+
+	query := Orm.Model(&Task{}).Select("task_id,task_number,task_name").
+		Where("project_id = ?", projectId).Order("task_number", false)
+
+	err := query.Scan(&fatherTasks).Error
+	if err != nil {
+		return nil, err
+	}
+	return fatherTasks, nil
+
 }

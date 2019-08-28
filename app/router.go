@@ -44,8 +44,9 @@ func InitRouter() *gin.Engine {
 		apiV1.POST("/project", service_project.CreateProject)
 		apiV1.PUT("/project/:key", service_project.UpdateProject)
 
-		apiV1.GET("/task",service_project.GetTasks)
-		apiV1.GET("/task/:key",service_project.GetTasks)
+		apiV1.GET("/task", service_project.GetTasks)
+		apiV1.GET("/task/:key", service_project.GetTasks)
+		apiV1.GET("/fatherTask", service_project.GetFatherTask)
 
 		apiV1.GET("/projectUser", service_project.GetProjectUser)
 		apiV1.POST("/projectUser", service_project.AddProjectUser)

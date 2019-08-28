@@ -51,7 +51,22 @@ func GetTasks(c *gin.Context) {
 
 // 创建项目任务
 func CreateTask(c *gin.Context) {
+	var obj struct {
+		TaskName     string `json:"task_name"`
+		TaskContent  string `json:"task_content"`
+		TaskType     string `json:"task_type"`
+		TaskStatus   string `json:"task_status"`
+		TaskPriority string `json:"task_priority"`
+		TaskId       string `json:"father_task_id"`
+		StartTime    string `json:"start_time"`
+		EndTime      string `json:"end_time"`
+		UserId       string `json:"user_id"`
+	}
 	appG := app.New(c)
+	if c.BindJSON(&obj) != nil {
+		appG.Response(http.StatusOK, e.InvalidParameter, nil)
+		return
+	}
 
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
 	return
@@ -73,6 +88,26 @@ func DeleteTask(c *gin.Context) {
 	return
 }
 
+// 获取任务列表，用于指定父级任务
+func GetFatherTask(c *gin.Context) {
+	appG := app.New(c)
+	projectId := c.Query("project_id")
+	// 项目未填
+	if projectId == "" {
+		appG.Response(http.StatusOK, e.InvalidParameter, nil)
+		return
+	}
+
+	fatherTasks, err := models.FindFatherTasks(projectId)
+	if err != nil {
+		appG.Response(http.StatusOK, e.NoResourcesFound, nil)
+		return
+	}
+
+	appG.Response(http.StatusOK, e.SUCCESS, fatherTasks)
+	return
+
+}
 
 // 项目任务指派
 func DistributionTask(c *gin.Context) {
