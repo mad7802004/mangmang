@@ -24,6 +24,8 @@ var ZhCnMsgFlags = map[int]string{
 	RoleDoesNotExist:         "角色不存在",
 	ProjectDoesNotExist:      "项目不存在",
 	ProjectUserExist:         "用户已存在该项目中，请勿重复添加",
+	ProjectUserDoesNotExist:  "项目用户不存在",
+	FatherTaskDoesNotExist:   "父级任务不存在",
 }
 
 var EnMsgFlags = map[int]string{

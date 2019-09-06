@@ -24,6 +24,8 @@ const (
 	RoleDoesNotExist         = 400113 // 角色不存在
 	ProjectDoesNotExist      = 400114 // 项目不存在
 	ProjectUserExist         = 400115 //用户已存在该项目中，请勿重复添加
+	ProjectUserDoesNotExist  = 400116 // 项目用户不存在
+	FatherTaskDoesNotExist   = 400117 // 父级任务不存在
 )
 
 type Message struct {

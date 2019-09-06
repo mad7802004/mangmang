@@ -102,7 +102,7 @@ func IsExistProjectUser(projectId, userId string) bool {
 	var total int
 	err := Orm.Model(&UserProjectMapping{}).
 		Where("project_id =? and user_id=?", projectId, userId).Count(&total).Error
-	if err != nil || total > 0 {
+	if err != nil || total == 0 {
 		return false
 	}
 

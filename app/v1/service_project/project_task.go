@@ -5,6 +5,7 @@ import (
 	"github.com/mangmang/models"
 	"github.com/mangmang/pkg/app"
 	"github.com/mangmang/pkg/e"
+	"github.com/mangmang/pkg/utils"
 	"net/http"
 )
 
@@ -52,19 +53,59 @@ func GetTasks(c *gin.Context) {
 // 创建项目任务
 func CreateTask(c *gin.Context) {
 	var obj struct {
-		TaskName     string `json:"task_name"`
-		TaskContent  string `json:"task_content"`
-		TaskType     string `json:"task_type"`
-		TaskStatus   string `json:"task_status"`
-		TaskPriority string `json:"task_priority"`
-		TaskId       string `json:"father_task_id"`
-		StartTime    string `json:"start_time"`
-		EndTime      string `json:"end_time"`
-		UserId       string `json:"user_id"`
+		FatherTaskId string          `json:"father_task_id"binding:"omitempty,uuid4"`
+		ProjectId    string          `json:"project_id"binding:"required,uuid4"`
+		UserId       string          `json:"user_id"binding:"omitempty,uuid4"`
+		TaskName     string          `json:"task_name"binding:"required,max=50"`
+		TaskPriority int             `json:"task_priority"binding:"gte=0,lte=6"`
+		TaskType     int             `json:"task_type"binding:"gte=0,lte=3"`
+		TaskStatus   int             `json:"task_status"binding:"gte=0,lte=3"`
+		TaskContent  string          `json:"task_content"binding:"required"`
+		StartTime    *utils.JSONTime `json:"start_time"binding:"omitempty"`
+		EndTime      *utils.JSONTime `json:"end_time"binding:"omitempty"`
 	}
 	appG := app.New(c)
-	if c.BindJSON(&obj) != nil {
+	if c.ShouldBindJSON(&obj) != nil {
 		appG.Response(http.StatusOK, e.InvalidParameter, nil)
+		return
+	}
+
+	if !models.IsExistProject(obj.ProjectId) {
+		appG.Response(http.StatusOK, e.ProjectDoesNotExist, nil)
+		return
+	}
+
+	if obj.FatherTaskId != "" && !models.IsExistTask(obj.FatherTaskId) {
+		appG.Response(http.StatusOK, e.FatherTaskDoesNotExist, nil)
+		return
+	}
+
+	if obj.UserId != "" && !models.IsExistProjectUser(obj.ProjectId, obj.UserId) {
+		appG.Response(http.StatusOK, e.ProjectUserDoesNotExist, nil)
+		return
+	}
+
+	taskNumber := models.FindMaxTaskNumber(obj.ProjectId)
+
+	newTask := &models.Task{
+		TaskId:       utils.GetUUID(),
+		FatherTaskId: obj.FatherTaskId,
+		ProjectId:    obj.ProjectId,
+		UserId:       obj.UserId,
+		TaskNumber:   taskNumber + 1,
+		TaskName:     obj.TaskName,
+		TaskPriority: obj.TaskPriority,
+		TaskType:     obj.TaskType,
+		TaskContent:  obj.TaskContent,
+		TaskSchedule: 0,
+		TaskStatus:   obj.TaskStatus,
+		StartTime:    obj.StartTime,
+		EndTime:      obj.EndTime,
+	}
+
+	// 创建任务
+	if !models.Create(newTask) {
+		appG.Response(http.StatusOK, e.NewFailed, nil)
 		return
 	}
 
