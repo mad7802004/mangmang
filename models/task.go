@@ -5,7 +5,7 @@ import (
 )
 
 type Task struct {
-	TaskId       string          `json:"task_id"`                     // 任务ID
+	TaskId       string          `json:"task_id"gorm:"primary_key"`   // 任务ID
 	FatherTaskId string          `json:"father_task_id"`              // 父级任务
 	ProjectId    string          `json:"project_id"`                  // 项目ID
 	UserId       string          `json:"user_id"`                     // 任务人员
@@ -45,14 +45,22 @@ func IsExistTask(taskId string) bool {
 
 }
 
+type QueryTask struct {
+	Task
+	UserName string `json:"user_name"`
+}
+
 // 根据项目ID查询所有任务
-func FindProjectIdTasks(projectId string, page, size int) ([]*Task, int, error) {
-	var tasks []*Task
+func FindProjectIdTasks(projectId string, page, size int) ([]*QueryTask, int, error) {
+
+	var tasks []*QueryTask
 	var total int
-	query := Orm.Model(&Task{}).Where("project_id = ?", projectId).Order("create_time", false)
+	query := Orm.Model(&Task{}).Select("task.*,user.name as user_name").
+		Joins("left join user on user.user_id = task.user_id").
+		Where("project_id = ?", projectId).Order("task_number DESC", false)
 
 	err := query.Offset((page - 1) * size).Limit(size).
-		Find(&tasks).Error
+		Scan(&tasks).Error
 	if err != nil || len(tasks) == 0 {
 		return nil, 0, err
 	}
@@ -94,4 +102,13 @@ func FindFatherTasks(projectId string) ([]*FatherTasks, error) {
 	}
 	return fatherTasks, nil
 
+}
+
+// 删除任务
+func DeleteTask(task *Task) bool {
+	err := Orm.Delete(&task).Error
+	if err != nil {
+		return false
+	}
+	return true
 }

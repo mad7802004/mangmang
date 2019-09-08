@@ -57,9 +57,9 @@ func CreateTask(c *gin.Context) {
 		ProjectId    string          `json:"project_id"binding:"required,uuid4"`
 		UserId       string          `json:"user_id"binding:"omitempty,uuid4"`
 		TaskName     string          `json:"task_name"binding:"required,max=50"`
-		TaskPriority int             `json:"task_priority"binding:"gte=0,lte=6"`
+		TaskPriority int             `json:"task_priority"binding:"gte=0,lte=3"`
 		TaskType     int             `json:"task_type"binding:"gte=0,lte=3"`
-		TaskStatus   int             `json:"task_status"binding:"gte=0,lte=3"`
+		TaskStatus   int             `json:"task_status"binding:"gte=0,lte=6"`
 		TaskContent  string          `json:"task_content"binding:"required"`
 		StartTime    *utils.JSONTime `json:"start_time"binding:"omitempty"`
 		EndTime      *utils.JSONTime `json:"end_time"binding:"omitempty"`
@@ -121,9 +121,28 @@ func UpdateTask(c *gin.Context) {
 	return
 }
 
-// 删除项目任务
+// 删除项目任务,
+// todo:未验证权限
 func DeleteTask(c *gin.Context) {
 	appG := app.New(c)
+	key := c.Param("key")
+
+	if key == "" {
+		appG.Response(http.StatusOK, e.InvalidParameter, nil)
+		return
+	}
+
+	// 判断任务是否存在
+	task, err := models.FindTask(key)
+	if err != nil {
+		appG.Response(http.StatusOK, e.BusinessCardDoesNotExist, nil)
+		return
+	}
+	// 删除任务
+	if !models.DeleteTask(task) {
+		appG.Response(http.StatusOK, e.FailedToDelete, nil)
+		return
+	}
 
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
 	return
