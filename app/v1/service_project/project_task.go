@@ -135,7 +135,7 @@ func DeleteTask(c *gin.Context) {
 	// 判断任务是否存在
 	task, err := models.FindTask(key)
 	if err != nil {
-		appG.Response(http.StatusOK, e.BusinessCardDoesNotExist, nil)
+		appG.Response(http.StatusOK, e.TaskDoesNotExit, nil)
 		return
 	}
 	// 删除任务
