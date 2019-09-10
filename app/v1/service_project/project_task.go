@@ -50,19 +50,20 @@ func GetTasks(c *gin.Context) {
 	return
 }
 
-// 创建项目任务
+// 创建项目任务 TODO:TaskCreatorId 创建人员ID后期由token解析获得
 func CreateTask(c *gin.Context) {
 	var obj struct {
-		FatherTaskId string          `json:"father_task_id"binding:"omitempty,uuid4"`
-		ProjectId    string          `json:"project_id"binding:"required,uuid4"`
-		UserId       string          `json:"user_id"binding:"omitempty,uuid4"`
-		TaskName     string          `json:"task_name"binding:"required,max=50"`
-		TaskPriority int             `json:"task_priority"binding:"gte=0,lte=3"`
-		TaskType     int             `json:"task_type"binding:"gte=0,lte=3"`
-		TaskStatus   int             `json:"task_status"binding:"gte=0,lte=6"`
-		TaskContent  string          `json:"task_content"binding:"required"`
-		StartTime    *utils.JSONTime `json:"start_time"binding:"omitempty"`
-		EndTime      *utils.JSONTime `json:"end_time"binding:"omitempty"`
+		FatherTaskId   string          `json:"father_task_id"binding:"omitempty,uuid4"`
+		ProjectId      string          `json:"project_id"binding:"required,uuid4"`
+		TaskFinisherId string          `json:"task_finisher_id"binding:"omitempty,uuid4"`
+		TaskCreatorId  string          `json:"task_creator_id"binding:"omitempty,uuid4"`
+		TaskName       string          `json:"task_name"binding:"required,max=50"`
+		TaskPriority   int             `json:"task_priority"binding:"gte=0,lte=3"`
+		TaskType       int             `json:"task_type"binding:"gte=0,lte=3"`
+		TaskStatus     int             `json:"task_status"binding:"gte=0,lte=6"`
+		TaskContent    string          `json:"task_content"binding:"required"`
+		StartTime      *utils.JSONTime `json:"start_time"binding:"omitempty"`
+		EndTime        *utils.JSONTime `json:"end_time"binding:"omitempty"`
 	}
 	appG := app.New(c)
 	if c.ShouldBindJSON(&obj) != nil {
@@ -80,7 +81,7 @@ func CreateTask(c *gin.Context) {
 		return
 	}
 
-	if obj.UserId != "" && !models.IsExistProjectUser(obj.ProjectId, obj.UserId) {
+	if obj.TaskFinisherId != "" && !models.IsExistProjectUser(obj.ProjectId, obj.TaskFinisherId) {
 		appG.Response(http.StatusOK, e.ProjectUserDoesNotExist, nil)
 		return
 	}
@@ -88,19 +89,20 @@ func CreateTask(c *gin.Context) {
 	taskNumber := models.FindMaxTaskNumber(obj.ProjectId)
 
 	newTask := &models.Task{
-		TaskId:       utils.GetUUID(),
-		FatherTaskId: obj.FatherTaskId,
-		ProjectId:    obj.ProjectId,
-		UserId:       obj.UserId,
-		TaskNumber:   taskNumber + 1,
-		TaskName:     obj.TaskName,
-		TaskPriority: obj.TaskPriority,
-		TaskType:     obj.TaskType,
-		TaskContent:  obj.TaskContent,
-		TaskSchedule: 0,
-		TaskStatus:   obj.TaskStatus,
-		StartTime:    obj.StartTime,
-		EndTime:      obj.EndTime,
+		TaskId:         utils.GetUUID(),
+		FatherTaskId:   obj.FatherTaskId,
+		ProjectId:      obj.ProjectId,
+		TaskFinisherId: obj.TaskFinisherId,
+		TaskCreatorId:  obj.TaskCreatorId,
+		TaskNumber:     taskNumber + 1,
+		TaskName:       obj.TaskName,
+		TaskPriority:   obj.TaskPriority,
+		TaskType:       obj.TaskType,
+		TaskContent:    obj.TaskContent,
+		TaskSchedule:   0,
+		TaskStatus:     obj.TaskStatus,
+		StartTime:      obj.StartTime,
+		EndTime:        obj.EndTime,
 	}
 
 	// 创建任务
