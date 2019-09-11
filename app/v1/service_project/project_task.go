@@ -9,10 +9,10 @@ import (
 	"net/http"
 )
 
-// 获取项目任务
-func GetTasks(c *gin.Context) {
+// 获取项目任务列表
+func GetTaskList(c *gin.Context) {
 	appG := app.New(c)
-	key := c.Param("key")
+
 	projectId := c.Query("project_id")
 
 	// 项目未填
@@ -21,16 +21,7 @@ func GetTasks(c *gin.Context) {
 		return
 	}
 
-	// 判断是否查询一个任务信息
-	if key != "" {
-		query, err := models.FindTask(key)
-		if err != nil {
-			appG.Response(http.StatusOK, e.NoResourcesFound, nil)
-			return
-		}
-		appG.Response(http.StatusOK, e.SUCCESS, query)
-		return
-	}
+
 
 	// 获取分页
 	page, size := app.GetPageSize(c)
@@ -50,6 +41,38 @@ func GetTasks(c *gin.Context) {
 	return
 }
 
+// 获取任务
+func GetTaskInfo( c *gin.Context)  {
+	appG := app.New(c)
+	key := c.Param("key")
+	// 判断是否查询一个任务信息
+	if key == "" {
+		appG.Response(http.StatusOK, e.InvalidParameter, nil)
+		return
+	}
+
+	queryTask, err := models.FindTaskInfo(key)
+	if err != nil {
+		appG.Response(http.StatusOK, e.NoResourcesFound, nil)
+		return
+	}
+
+	queryChildTask,err :=models.FindChildTask(key)
+	if err != nil {
+		appG.Response(http.StatusOK, e.NoResourcesFound, nil)
+		return
+	}
+
+	data:=make(map[string]interface{})
+	data["info"] = queryTask
+	data["child"] = queryChildTask
+
+
+
+	appG.Response(http.StatusOK, e.SUCCESS, data)
+	return
+}
+
 // 创建项目任务 TODO:TaskCreatorId 创建人员ID后期由token解析获得
 func CreateTask(c *gin.Context) {
 	var obj struct {
@@ -62,8 +85,8 @@ func CreateTask(c *gin.Context) {
 		TaskType       int             `json:"task_type"binding:"gte=0,lte=3"`
 		TaskStatus     int             `json:"task_status"binding:"gte=0,lte=6"`
 		TaskContent    string          `json:"task_content"binding:"required"`
-		StartTime      *utils.JSONTime `json:"start_time"binding:"omitempty"`
-		EndTime        *utils.JSONTime `json:"end_time"binding:"omitempty"`
+		StartTime      *utils.JSONDate `json:"start_time"binding:"omitempty"`
+		EndTime        *utils.JSONDate `json:"end_time"binding:"omitempty"`
 	}
 	appG := app.New(c)
 	if c.ShouldBindJSON(&obj) != nil {
