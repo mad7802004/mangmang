@@ -24,11 +24,20 @@ type Task struct {
 	DataStatus     int8            `json:"data_status"gorm:"default"`   // 状态
 }
 
+type ChildTask struct {
+	Task
+	TaskFinisher  string `json:"task_finisher"`
+
+}
+
 // 根据任务ID查询子任务列表
-func FindChildTask(fatherTaskId string) ([]*Task, error) {
-	var childTaskList []*Task
-	err := Orm.Model(&Task{}).Where("father_task_id = ?", fatherTaskId).
-		Find(&childTaskList).Order("task_number").Error
+func FindChildTask(fatherTaskId string) ([]*ChildTask, error) {
+	var childTaskList []*ChildTask
+	err := Orm.Model(&Task{}).
+		Select("task.*,user.name as task_finisher").
+		Joins("left join user on user.user_id = task.task_finisher_id").
+		Where("father_task_id = ?", fatherTaskId).
+		Scan(&childTaskList).Order("task_number").Error
 	if err != nil {
 		return nil, err
 	}
@@ -144,6 +153,15 @@ func FindFatherTasks(projectId string) ([]*FatherTasks, error) {
 	}
 	return fatherTasks, nil
 
+}
+
+// 更新用户信息
+func UpdateTask(task *Task, data interface{}) bool {
+	err := Orm.Model(&task).Updates(data).Error
+	if err != nil {
+		return false
+	}
+	return true
 }
 
 // 删除任务

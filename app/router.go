@@ -47,7 +47,9 @@ func InitRouter() *gin.Engine {
 		apiV1.GET("/task", service_project.GetTaskList)
 		apiV1.GET("/task/:key", service_project.GetTaskInfo)
 		apiV1.POST("/task", service_project.CreateTask)
+		apiV1.PUT("/task/:key", service_project.UpdateTask)
 		apiV1.DELETE("/task/:key", service_project.DeleteTask)
+
 
 		apiV1.GET("/fatherTask", service_project.GetFatherTask)
 

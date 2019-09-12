@@ -21,8 +21,6 @@ func GetTaskList(c *gin.Context) {
 		return
 	}
 
-
-
 	// 获取分页
 	page, size := app.GetPageSize(c)
 	tasks, total, err := models.FindProjectIdTasks(projectId, page, size)
@@ -42,32 +40,31 @@ func GetTaskList(c *gin.Context) {
 }
 
 // 获取任务
-func GetTaskInfo( c *gin.Context)  {
+func GetTaskInfo(c *gin.Context) {
 	appG := app.New(c)
 	key := c.Param("key")
-	// 判断是否查询一个任务信息
+	// 判断是否存在
 	if key == "" {
 		appG.Response(http.StatusOK, e.InvalidParameter, nil)
 		return
 	}
-
+	// 获取任务
 	queryTask, err := models.FindTaskInfo(key)
 	if err != nil {
 		appG.Response(http.StatusOK, e.NoResourcesFound, nil)
 		return
 	}
 
-	queryChildTask,err :=models.FindChildTask(key)
+	// 获取任务子任务
+	queryChildTask, err := models.FindChildTask(key)
 	if err != nil {
 		appG.Response(http.StatusOK, e.NoResourcesFound, nil)
 		return
 	}
 
-	data:=make(map[string]interface{})
+	data := make(map[string]interface{})
 	data["info"] = queryTask
 	data["child"] = queryChildTask
-
-
 
 	appG.Response(http.StatusOK, e.SUCCESS, data)
 	return
@@ -94,21 +91,25 @@ func CreateTask(c *gin.Context) {
 		return
 	}
 
+	// 查询项目是否存在
 	if !models.IsExistProject(obj.ProjectId) {
 		appG.Response(http.StatusOK, e.ProjectDoesNotExist, nil)
 		return
 	}
 
+	// 查询父级任务是否存在
 	if obj.FatherTaskId != "" && !models.IsExistTask(obj.FatherTaskId) {
 		appG.Response(http.StatusOK, e.FatherTaskDoesNotExist, nil)
 		return
 	}
 
+	// 查询任务人是否存在
 	if obj.TaskFinisherId != "" && !models.IsExistProjectUser(obj.ProjectId, obj.TaskFinisherId) {
 		appG.Response(http.StatusOK, e.ProjectUserDoesNotExist, nil)
 		return
 	}
 
+	// 获取任务编号
 	taskNumber := models.FindMaxTaskNumber(obj.ProjectId)
 
 	newTask := &models.Task{
@@ -140,7 +141,54 @@ func CreateTask(c *gin.Context) {
 
 // 更新项目任务
 func UpdateTask(c *gin.Context) {
+	var obj struct {
+		FatherTaskId   string          `json:"father_task_id"binding:"omitempty,uuid4"`
+		TaskFinisherId string          `json:"task_finisher_id"binding:"omitempty,uuid4"`
+		TaskName       string          `json:"task_name"binding:"required,max=50"`
+		TaskPriority   int             `json:"task_priority"binding:"gte=0,lte=3"`
+		TaskType       int             `json:"task_type"binding:"gte=0,lte=3"`
+		TaskStatus     int             `json:"task_status"binding:"gte=0,lte=6"`
+		TaskContent    string          `json:"task_content"binding:"required"`
+		StartTime      *utils.JSONDate `json:"start_time"binding:"omitempty"`
+		EndTime        *utils.JSONDate `json:"end_time"binding:"omitempty"`
+	}
 	appG := app.New(c)
+	key := c.Param("key")
+
+	if key == "" {
+		appG.Response(http.StatusOK, e.InvalidParameter, nil)
+		return
+	}
+
+	if c.ShouldBindJSON(&obj) != nil {
+		appG.Response(http.StatusOK, e.InvalidParameter, nil)
+		return
+	}
+
+	// 查询任务
+	task, err := models.FindTask(key)
+	if err != nil {
+		appG.Response(http.StatusOK, e.TaskDoesNotExit, nil)
+		return
+	}
+
+	// 判断父级任务是否存在
+	if obj.FatherTaskId != "" && !models.IsExistTask(obj.FatherTaskId) {
+		appG.Response(http.StatusOK, e.FatherTaskDoesNotExist, nil)
+		return
+	}
+
+	// 判断任务人是否属于该项目
+	if obj.TaskFinisherId != "" && !models.IsExistProjectUser(task.ProjectId, obj.TaskFinisherId) {
+		appG.Response(http.StatusOK, e.ProjectUserDoesNotExist, nil)
+		return
+	}
+
+	// 更新任务
+	if !models.UpdateTask(task, obj) {
+		appG.Response(http.StatusOK, e.UpdateFailed, nil)
+		return
+	}
 
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
 	return
@@ -183,6 +231,7 @@ func GetFatherTask(c *gin.Context) {
 		return
 	}
 
+	// 获取父级任务列表
 	fatherTasks, err := models.FindFatherTasks(projectId)
 	if err != nil {
 		appG.Response(http.StatusOK, e.NoResourcesFound, nil)
