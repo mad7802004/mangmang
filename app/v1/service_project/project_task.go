@@ -78,9 +78,9 @@ func CreateTask(c *gin.Context) {
 		TaskFinisherId string          `json:"task_finisher_id"binding:"omitempty,uuid4"`
 		TaskCreatorId  string          `json:"task_creator_id"binding:"omitempty,uuid4"`
 		TaskName       string          `json:"task_name"binding:"required,max=50"`
-		TaskPriority   int             `json:"task_priority"binding:"gte=0,lte=3"`
-		TaskType       int             `json:"task_type"binding:"gte=0,lte=3"`
-		TaskStatus     int             `json:"task_status"binding:"gte=0,lte=6"`
+		TaskPriority   *int             `json:"task_priority"binding:"gte=0,lte=3"`
+		TaskType       *int             `json:"task_type"binding:"gte=0,lte=3"`
+		TaskStatus     *int             `json:"task_status"binding:"gte=0,lte=6"`
 		TaskContent    string          `json:"task_content"binding:"required"`
 		StartTime      *utils.JSONDate `json:"start_time"binding:"omitempty"`
 		EndTime        *utils.JSONDate `json:"end_time"binding:"omitempty"`
@@ -123,7 +123,6 @@ func CreateTask(c *gin.Context) {
 		TaskPriority:   obj.TaskPriority,
 		TaskType:       obj.TaskType,
 		TaskContent:    obj.TaskContent,
-		TaskSchedule:   0,
 		TaskStatus:     obj.TaskStatus,
 		StartTime:      obj.StartTime,
 		EndTime:        obj.EndTime,
@@ -145,9 +144,10 @@ func UpdateTask(c *gin.Context) {
 		FatherTaskId   string          `json:"father_task_id"binding:"omitempty,uuid4"`
 		TaskFinisherId string          `json:"task_finisher_id"binding:"omitempty,uuid4"`
 		TaskName       string          `json:"task_name"binding:"required,max=50"`
-		TaskPriority   int             `json:"task_priority"binding:"gte=0,lte=3"`
-		TaskType       int             `json:"task_type"binding:"gte=0,lte=3"`
-		TaskStatus     int             `json:"task_status"binding:"gte=0,lte=6"`
+		TaskPriority   *int             `json:"task_priority"binding:"gte=0,lte=3"`
+		TaskType       *int             `json:"task_type"binding:"gte=0,lte=3"`
+		TaskStatus     *int             `json:"task_status"binding:"gte=0,lte=6"`
+		TaskSchedule   *int            `json:"task_schedule"binding:"gte=0,lte=100"`
 		TaskContent    string          `json:"task_content"binding:"required"`
 		StartTime      *utils.JSONDate `json:"start_time"binding:"omitempty"`
 		EndTime        *utils.JSONDate `json:"end_time"binding:"omitempty"`

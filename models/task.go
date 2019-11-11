@@ -12,11 +12,11 @@ type Task struct {
 	TaskCreatorId  string          `json:"task_creator_id"`             // 任务创建人
 	TaskNumber     int             `json:"task_number"`                 // 任务编码
 	TaskName       string          `json:"task_name"`                   // 任务名称
-	TaskPriority   int             `json:"task_priority"gorm:"default"` // 任务优先级
-	TaskType       int             `json:"task_type"`                   // 任务类型
+	TaskPriority   *int             `json:"task_priority"gorm:"default"` // 任务优先级
+	TaskType       *int             `json:"task_type"`                   // 任务类型
 	TaskContent    string          `json:"task_content"`                // 任务内容
-	TaskSchedule   int             `json:"task_schedule"gorm:"default"` // 任务进度
-	TaskStatus     int             `json:"task_status"gorm:"default"`   // 任务状态
+	TaskSchedule   *int             `json:"task_schedule"gorm:"default"` // 任务进度
+	TaskStatus     *int             `json:"task_status"gorm:"default"`   // 任务状态
 	StartTime      *utils.JSONDate `json:"start_time"gorm:"default"`    // 任务开始时间
 	EndTime        *utils.JSONDate `json:"end_time"`                    // 任务预计完成时间
 	CreateTime     utils.JSONTime  `json:"create_time"`                 // 创建时间
